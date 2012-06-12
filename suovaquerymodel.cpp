@@ -103,6 +103,8 @@ bool SuovaQueryModel::setQuery(QString query)
 
     if( message.arguments().count())
     {
+        storeQuery(query);
+        clear();
         QVariant firstArgument = message.arguments().first();
         QDBusArgument resultSet = firstArgument.value<QDBusArgument>();
 
@@ -110,15 +112,27 @@ bool SuovaQueryModel::setQuery(QString query)
         while( !resultSet.atEnd())
         {
             // Append every row to internal result storage
-            result_.append( resultSet.asVariant().toStringList() );
+            // There is a virtual function for more hight level functions
+            appendRow(resultSet.asVariant().toStringList() );
         }
-        storeQuery(query);
+
         return true;
     }
 
     // Unsuccessed - no data in reply message
     return false;
 
+}
+
+void SuovaQueryModel::clear()
+{
+    result_.clear();
+}
+
+
+void SuovaQueryModel::appendRow(const QStringList& rowData)
+{
+    result_.append( rowData);
 }
 
 void SuovaQueryModel::storeQuery(const QString &query)

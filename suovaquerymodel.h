@@ -40,8 +40,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-    /** Return single result item as string*/
-    QString result(const int row, const int column) const;
+    /** Return single result item as string */
+    virtual QString result(const int row, const int column) const;
 
     /** SPARQL query */
     QString query() const { return query_; }
@@ -53,9 +53,14 @@ public:
       @returns true is successed */
     bool setQuery( QString query );
 
+    virtual void clear();
+
 signals:
     
 public slots:
+
+protected:
+    virtual void appendRow(const QStringList& rowData); /** Append a row from QStringList data*/
 
 private:
     void storeQuery( const QString& query); /** Store query command*/

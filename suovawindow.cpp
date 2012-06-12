@@ -19,7 +19,7 @@
 
 #include "suovawindow.h"
 
-#include "suovaquerymodel.h"
+#include "suovafilequerymodel.h"
 
 #include <QTableView>
 
@@ -30,7 +30,8 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 {
 
     // Testing code: view 100 last modified files
-    SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
+    // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
+    SuovaFileQueryModel* model = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     QTableView* view = new QTableView(this);
     view->setModel(model);
     setCentralWidget(view);

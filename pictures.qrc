@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/mime">
+        <file>pic/application-pdf.png</file>
+        <file>pic/application-msword.png</file>
+        <file>pic/application-vnd.oasis.opendocument.presentation.png</file>
+        <file>pic/application-vnd.oasis.opendocument.spreadsheet.png</file>
+        <file>pic/application-vnd.oasis.opendocument.text.png</file>
+        <file>pic/text-plain.png</file>
+        <file>pic/text-html.png</file>
+        <file>pic/inode-directory.png</file>
+        <file>pic/audio-x-vorbis+ogg.png</file>
+    </qresource>
+</RCC>

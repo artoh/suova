@@ -12,10 +12,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         suovawindow.cpp \
-    suovaquerymodel.cpp
+    suovaquerymodel.cpp \
+    suovafileinfo.cpp \
+    suovafilequerymodel.cpp
 
 HEADERS  += suovawindow.h \
-    suovaquerymodel.h
+    suovaquerymodel.h \
+    suovafileinfo.h \
+    suovafilequerymodel.h
 
 OTHER_FILES += \
     README.txt
+
+RESOURCES += \
+    pictures.qrc
