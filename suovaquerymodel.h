@@ -26,6 +26,7 @@
 
 /** Model for SPARQL query
 
+    This is a most low lever query model.
   */
 class SuovaQueryModel : public QAbstractTableModel
 {
@@ -37,6 +38,7 @@ public:
     int columnCount(const QModelIndex& /* parent */ = QModelIndex()) const;
 
     QVariant data(const QModelIndex &index, int role) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     /** Return single result item as string*/
     QString result(const int row, const int column) const;
@@ -56,8 +58,11 @@ signals:
 public slots:
 
 private:
+    void storeQuery( const QString& query); /** Store query command*/
+
     QList<QStringList> result_; /** Results for query */
     QString query_; /** SPARQL query */
+    QStringList columnHeaders_;
 };
 
 #endif // SUOVAQUERYMODEL_H

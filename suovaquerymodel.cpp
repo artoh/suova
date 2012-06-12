@@ -68,6 +68,21 @@ QVariant SuovaQueryModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+QVariant SuovaQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if( role == Qt::TextAlignmentRole)
+        return int( Qt::AlignCenter | Qt::AlignVCenter);
+    else if( role == Qt::DisplayRole)
+    {
+        if( orientation == Qt::Vertical)
+            return QVariant(section+1);   // row number
+        else
+            return columnHeaders_.value(section);
+    }
+
+    return QVariant();
+}
+
 bool SuovaQueryModel::setQuery(QString query)
 {
     // dbus message connecting to Meta Tracker server
@@ -97,7 +112,7 @@ bool SuovaQueryModel::setQuery(QString query)
             // Append every row to internal result storage
             result_.append( resultSet.asVariant().toStringList() );
         }
-
+        storeQuery(query);
         return true;
     }
 
@@ -106,3 +121,19 @@ bool SuovaQueryModel::setQuery(QString query)
 
 }
 
+void SuovaQueryModel::storeQuery(const QString &query)
+{
+    query_ = query;
+    columnHeaders_.clear();
+
+    // Try to analyze query to find column headers
+    QStringList queryLine = query.split(" ");
+    foreach(QString item, queryLine)
+    {
+        if( item.startsWith("WHERE"))
+            return;     // end of fields reached
+        if( item.contains('?'))
+            columnHeaders_.append(item);    // Item!
+    }
+
+}
