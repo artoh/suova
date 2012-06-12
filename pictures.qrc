@@ -9,5 +9,8 @@
         <file>pic/text-html.png</file>
         <file>pic/inode-directory.png</file>
         <file>pic/audio-x-vorbis+ogg.png</file>
+        <file>pic/application-rtf.png</file>
+        <file>pic/text-xml.png</file>
+        <file>pic/unknown.png</file>
     </qresource>
 </RCC>

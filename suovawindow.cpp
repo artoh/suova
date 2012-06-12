@@ -34,6 +34,7 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     SuovaFileQueryModel* model = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     QTableView* view = new QTableView(this);
     view->setModel(model);
+    view->resizeColumnsToContents();
     setCentralWidget(view);
 }
 

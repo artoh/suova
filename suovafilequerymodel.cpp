@@ -20,6 +20,8 @@
 #include "suovafilequerymodel.h"
 
 #include <QIcon>
+#include <QUrl>
+#include <QFile>
 
 SuovaFileQueryModel::SuovaFileQueryModel(QObject *parent, const QString &where) :
     SuovaQueryModel(parent)
@@ -104,8 +106,16 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
     }
     else if( role == Qt::DecorationRole && index.column() == 0)
     {
-        QIcon icon = QIcon( QString(":/mime/pic/%1.png").arg( files_.at(index.row()).mimetype().replace('/','-') )  );
-        return icon;
+        // mimetype icons
+        // testing - image for images
+        QString iconFileName;
+        if( files_.at(index.row()).mimetype().startsWith("image"))
+            iconFileName = QUrl(files_.at(index.row()).url()).toLocalFile() ;
+        else
+            iconFileName = QString(":/mime/pic/%1.png").arg( files_.at(index.row()).mimetype().replace('/','-'));
+        if( QFile(iconFileName).exists())
+                return QIcon(iconFileName);    // icon for mime type
+        return QIcon(":/mime/pic/unknown.png");
     }
 
     return QVariant();
