@@ -4,16 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui  dbus
 
 TARGET = suova
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        suovawindow.cpp
+        suovawindow.cpp \
+    suovaquerymodel.cpp
 
-HEADERS  += suovawindow.h
+HEADERS  += suovawindow.h \
+    suovaquerymodel.h
 
 OTHER_FILES += \
     README.txt
