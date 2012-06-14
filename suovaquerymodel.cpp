@@ -19,12 +19,10 @@
 
 #include "suovaquerymodel.h"
 
-#include <QDBusMessage>
-#include <QDBusConnection>
-#include <QDBusArgument>
+
 
 SuovaQueryModel::SuovaQueryModel(QObject *parent, QString query) :
-    QAbstractTableModel(parent)
+    SuovaAbstractQueryModel(parent)
 {
     if( !query.isEmpty())
         setQuery(query);
@@ -53,20 +51,7 @@ QString SuovaQueryModel::result(const int row, const int column) const
 }
 
 
-QVariant SuovaQueryModel::data(const QModelIndex &index, int role) const
-{
-    if( !index.isValid())
-        return QVariant();
 
-    if( role == Qt::TextAlignmentRole)
-        return int( Qt::AlignLeft | Qt::AlignTop);
-    else if( role == Qt::DisplayRole)
-    {
-        return result( index.row(), index.column());
-    }
-
-    return QVariant();
-}
 
 QVariant SuovaQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
@@ -83,46 +68,7 @@ QVariant SuovaQueryModel::headerData(int section, Qt::Orientation orientation, i
     return QVariant();
 }
 
-bool SuovaQueryModel::setQuery(QString query)
-{
-    // dbus message connecting to Meta Tracker server
-    QDBusMessage message = QDBusMessage::createMethodCall("org.freedesktop.Tracker1","/org/freedesktop/Tracker1/Resources",
-                                                              "org.freedesktop.Tracker1.Resources","SparqlQuery");
-    QList<QVariant> arguments;
-    arguments.append( query );
-    message.setArguments(arguments);
 
-    // call Meta Tracker
-    message = QDBusConnection::sessionBus().call(message);
-
-    if( message.type() == QDBusMessage::ErrorMessage)
-        return false;
-
-    // dbus reply message contains results as first argument
-    // first argument is a table containing the results
-
-    if( message.arguments().count())
-    {
-        storeQuery(query);
-        clear();
-        QVariant firstArgument = message.arguments().first();
-        QDBusArgument resultSet = firstArgument.value<QDBusArgument>();
-
-        resultSet.beginArray();
-        while( !resultSet.atEnd())
-        {
-            // Append every row to internal result storage
-            // There is a virtual function for more hight level functions
-            appendRow(resultSet.asVariant().toStringList() );
-        }
-
-        return true;
-    }
-
-    // Unsuccessed - no data in reply message
-    return false;
-
-}
 
 void SuovaQueryModel::clear()
 {
@@ -135,19 +81,23 @@ void SuovaQueryModel::appendRow(const QStringList& rowData)
     result_.append( rowData);
 }
 
-void SuovaQueryModel::storeQuery(const QString &query)
+bool SuovaQueryModel::setQuery(const QString &query)
 {
-    query_ = query;
-    columnHeaders_.clear();
 
-    // Try to analyze query to find column headers
-    QStringList queryLine = query.split(" ");
-    foreach(QString item, queryLine)
+    if( execQuery(query))
     {
-        if( item.startsWith("WHERE"))
-            return;     // end of fields reached
-        if( item.contains('?'))
-            columnHeaders_.append(item);    // Item!
-    }
+        columnHeaders_.clear();
 
+        // Try to analyze query to find column headers
+        QStringList queryLine = query.split(" ");
+        foreach(QString item, queryLine)
+        {
+            if( item.startsWith("WHERE"))
+                return true;     // end of fields reached
+            if( item.contains('?'))
+                columnHeaders_.append(item);    // Item!
+        }
+        return true;
+    }
+    return false;
 }

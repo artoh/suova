@@ -24,7 +24,7 @@
 #include <QFile>
 
 SuovaFileQueryModel::SuovaFileQueryModel(QObject *parent, const QString &where) :
-    SuovaQueryModel(parent)
+    SuovaAbstractQueryModel(parent)
 {
     if( !where.isEmpty())
         setWhere(where);
@@ -36,7 +36,7 @@ bool SuovaFileQueryModel::setWhere(const QString &where)
     // query with file info headers and custom where
     QString query = QString("SELECT %1 WHERE  %2 ").arg(SuovaFileInfo::SelectFields).arg(where);
 
-    return setQuery(query);
+    return execQuery(query);
 
 }
 

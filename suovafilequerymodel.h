@@ -20,7 +20,7 @@
 #ifndef SUOVAFILEQUERYMODEL_H
 #define SUOVAFILEQUERYMODEL_H
 
-#include "suovaquerymodel.h"
+#include "suovaabstractquerymodel.h"
 #include "suovafileinfo.h"
 
 #include <QList>
@@ -30,7 +30,7 @@
     This is advanced (table) model for getting file list
 
   */
-class SuovaFileQueryModel : public SuovaQueryModel
+class SuovaFileQueryModel : public SuovaAbstractQueryModel
 {
     Q_OBJECT
 public:

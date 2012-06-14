@@ -14,12 +14,14 @@ SOURCES += main.cpp\
         suovawindow.cpp \
     suovaquerymodel.cpp \
     suovafileinfo.cpp \
-    suovafilequerymodel.cpp
+    suovafilequerymodel.cpp \
+    suovaabstractquerymodel.cpp
 
 HEADERS  += suovawindow.h \
     suovaquerymodel.h \
     suovafileinfo.h \
-    suovafilequerymodel.h
+    suovafilequerymodel.h \
+    suovaabstractquerymodel.h
 
 OTHER_FILES += \
     README.txt
