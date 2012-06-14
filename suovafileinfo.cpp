@@ -21,7 +21,7 @@
 #include "suovaquerymodel.h"
 
 SuovaFileInfo::SuovaFileInfo(QStringList data) :
-    allInformationFetched_(false)
+    allInformationFetched_(false), tagsFetched_(false)
 {
     if( data.count() > 8)
     {
@@ -37,15 +37,26 @@ SuovaFileInfo::SuovaFileInfo(QStringList data) :
         modified_ = QDateTime::fromString(iter.next(), Qt::ISODate); // 7. modified
         accessed_ = QDateTime::fromString(iter.next(), Qt::ISODate); // 8. accessed
         bytes_ = iter.next().toInt(); // 9. file size in bytes
+
+        fetchTags();
+        fetchAllInformation();
     }
 }
 
 
-QString SuovaFileInfo::information(QString key)
+QString SuovaFileInfo::information(QString key) const
 {
-    if( !allInformationFetched_)
-        fetchAllInformation();
     return information_.value(key);
+}
+
+QStringList SuovaFileInfo::informations(QString key) const
+{
+    return information_.values(key);
+}
+
+QStringList SuovaFileInfo::tags() const
+{
+    return tags_;
 }
 
 
@@ -67,6 +78,22 @@ void SuovaFileInfo::fetchAllInformation()
     }
 }
 
+void SuovaFileInfo::fetchTags()
+{
+    if( tagsFetched_)
+        return;
+
+    SuovaQueryModel tagQuery;
+    QString queryString = QString("SELECT ?tags ?labels WHERE { <%1>   nao:hasTag ?tags . ?tags a nao:Tag ; nao:prefLabel ?labels . } ORDER BY ASC(?labels)").arg(urn());
+
+    if( tagQuery.setQuery(queryString))
+    {
+        // Fetch tags from model
+        for( int i=0; i < tagQuery.rowCount(); i++)
+            tags_.append(tagQuery.result(i,1));
+    }
+    tagsFetched_ = true;
+}
 
 const QString SuovaFileInfo::SelectFields = "?f nie:url(?f) nfo:fileName(?f) nie:title(?f) nie:mimeType(?f) "
         "nie:contentCreated(?f) nfo:fileLastModified(?f) nfo:fileLastAccessed(?f) nfo:fileSize(?f)";

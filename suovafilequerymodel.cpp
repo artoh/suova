@@ -59,8 +59,8 @@ int SuovaFileQueryModel::rowCount(const QModelIndex &) const
 
 int SuovaFileQueryModel::columnCount(const QModelIndex &) const
 {
-    // File, Modified and Size
-    return 3;
+    // File, Modified and Size, tags
+    return 4;
 }
 
 QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -78,6 +78,7 @@ QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientatio
             case 0 : return tr("File");
             case 1: return tr("Modified");
             case 2: return tr("Size");
+            case 3: return tr("Tags");
 
             }
         }
@@ -135,12 +136,16 @@ QString SuovaFileQueryModel::result(const int row, const int column) const
         case 1:
             return files_.at(row).modified().date().toString(Qt::SystemLocaleShortDate);
         case 2:
+        {
             int bytes = files_.at(row).bytes();
             if( bytes < 1024 )
                 return tr("%1 b").arg(bytes);
             if( bytes < 1024 * 1024)
                 return tr("%1 k").arg(bytes / 1024);
             return tr("%1 MB").arg( bytes / (1024 * 1024));
+        }
+        case 3:
+            return files_.at(row).tags().join(",");
         }
     }
     return QString();

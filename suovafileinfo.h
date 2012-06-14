@@ -48,10 +48,14 @@ public:
     QDateTime accessed() const { return accessed_; }
     int bytes() const { return bytes_; }
 
+    /** List of tags */
+    QStringList tags() const;
+
     /** Information about specified key
 
         @arg Field name with full namespace */
-    QString information(QString key);
+    QString information(QString key) const;
+    QStringList informations(QString key) const;
     QStringList keys() const { return information_.keys(); }
     QStringList information() const { return information_.values(); }
 
@@ -69,11 +73,14 @@ private:
     int bytes_;
 
     QMap<QString,QString> information_; /** All information reached by tracker-info*/
+    QStringList tags_;
 
     bool allInformationFetched_;    /** Have all the information, or only headers*/
+    bool tagsFetched_;
 
     /** Fetch all information reached by tracker-info*/
     void fetchAllInformation();
+    void fetchTags();
 };
 
 #endif // SUOVAFILEINFO_H
