@@ -1,5 +1,5 @@
 /**************************************************************************
-**  suovafilequerymodel.h
+**  suovafilefullinfo.h
 **  Copyright (c) 2012 Arto Hyvättinen 
 **
 **  This program is free software: you can redistribute it and/or modify
@@ -14,48 +14,51 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  SuovaFileQueryModel  13.6.2012
+**  SuovaFileFullInfo  15.6.2012
 **************************************************************************/
 
-#ifndef SUOVAFILEQUERYMODEL_H
-#define SUOVAFILEQUERYMODEL_H
+#ifndef SUOVAFILEFULLINFO_H
+#define SUOVAFILEFULLINFO_H
 
-#include "suovafilefullinfo.h"
+#include "suovaabstractquerymodel.h"
+#include "suovaabstractfileinfo.h"
 
-#include <QList>
-
-/** Model for quering files
-
-    This is advanced (table) model for getting file list
+/** Stores full information about a single file (including tags)
 
   */
-class SuovaFileQueryModel : public SuovaAbstractQueryModel
+class SuovaFileFullInfo : public SuovaAbstractQueryModel, public SuovaAbstractFileInfo
 {
     Q_OBJECT
 public:
-    explicit SuovaFileQueryModel(QObject *parent = 0, const QString& where = QString());
+    SuovaFileFullInfo(QString urn, QObject *parent = 0);
+    
 
-    int rowCount(const QModelIndex & = QModelIndex()) const;
-    int columnCount(const QModelIndex & = QModelIndex()) const;
-
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role) const;
-
     virtual QString result(const int row, const int column) const;
 
-    /** Query with where clause*/
-    bool setWhere(const QString& where);
+    int rowCount(const QModelIndex& /* parent */ = QModelIndex()) const;
+    int columnCount(const QModelIndex& /* &parent */ = QModelIndex()) const;
 
-    void clear();
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+    QVariant information(const QString& key) const;
+    QList<QVariant> informations(const QString& key) const;
+    QStringList allKeys() const;
+    QList<QVariant> allInformation() const;
+
+    QString urn() const { return urn_; }
 
 signals:
     
 public slots:
-    
+
 protected:
     virtual void appendRow(const QStringList &rowData);
 
-    QList<SuovaFileFullInfo*> files_;
+private:
+    QString urn_;
+    QMap<QString,QVariant> information_; /** All information reached by tracker-info*/
+    
 };
 
-#endif // SUOVAFILEQUERYMODEL_H
+#endif // SUOVAFILEFULLINFO_H

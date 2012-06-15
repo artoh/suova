@@ -42,7 +42,12 @@ public:
     /** SPARQL query */
     QString query() const { return query_; }
 
-    virtual void clear() = 0;
+    /** Clear results
+
+      It is possible to make models without function to reload results,
+      so it can be empty funtion.
+      */
+    virtual void clear() {;}
 
 signals:
     

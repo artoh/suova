@@ -22,6 +22,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <QFile>
+#include <QDate>
 
 SuovaFileQueryModel::SuovaFileQueryModel(QObject *parent, const QString &where) :
     SuovaAbstractQueryModel(parent)
@@ -34,7 +35,7 @@ SuovaFileQueryModel::SuovaFileQueryModel(QObject *parent, const QString &where) 
 bool SuovaFileQueryModel::setWhere(const QString &where)
 {
     // query with file info headers and custom where
-    QString query = QString("SELECT %1 WHERE  %2 ").arg(SuovaFileInfo::SelectFields).arg(where);
+    QString query = QString("SELECT ?f WHERE  %2 ").arg(where);
 
     return execQuery(query);
 
@@ -43,12 +44,16 @@ bool SuovaFileQueryModel::setWhere(const QString &where)
 void SuovaFileQueryModel::appendRow(const QStringList &rowData)
 {
     // append SuovaFileInfo object
-    files_.append( SuovaFileInfo(rowData) );
+    SuovaFileFullInfo* info = new SuovaFileFullInfo(rowData.first(), this);
+    files_.append( info );
 }
 
 
 void SuovaFileQueryModel::clear()
 {
+    SuovaFileFullInfo* info;
+    foreach( info, files_)
+        info->deleteLater();
     files_.clear();
 }
 
@@ -59,8 +64,8 @@ int SuovaFileQueryModel::rowCount(const QModelIndex &) const
 
 int SuovaFileQueryModel::columnCount(const QModelIndex &) const
 {
-    // File, Modified and Size, tags
-    return 4;
+    // File, Modified, Accessed and Size, tags
+    return 5;
 }
 
 QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -77,8 +82,9 @@ QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientatio
             {
             case 0 : return tr("File");
             case 1: return tr("Modified");
-            case 2: return tr("Size");
-            case 3: return tr("Tags");
+            case 2: return tr("Accessed");
+            case 3: return tr("Size");
+            case 4: return tr("Tags");
 
             }
         }
@@ -101,19 +107,72 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
             return int( Qt::AlignCenter | Qt::AlignTop);
         return int( Qt::AlignRight | Qt::AlignTop);
     }
+
     else if( role == Qt::DisplayRole)
+    {       
+        switch( index.column() )
+        {
+        case 0:
+            if( files_.at(index.row())->information("title").isNull())
+                return files_.at(index.row())->information("fileName");
+            else
+                return files_.at(index.row())->information("title");
+        case 1:
+            return files_.at(index.row())->information("fileLastModified").toDate();
+        case 2:
+            return files_.at(index.row())->information("fileLastAccessed").toDate();
+        case 3:
+        {
+            int bytes = files_.at(index.row())->information("fileSize").toInt();
+            if( bytes < 1024 )
+                return tr("%1 b").arg(bytes);
+            if( bytes < 1024 * 1024)
+                return tr("%1 k").arg(bytes / 1024);
+            return tr("%1 MB").arg( bytes / (1024 * 1024));
+        }
+        case 4:
+            return files_.at(index.row())->information("tag").toString();
+        }
+
+    }
+    else if( role == Qt::UserRole)
     {
-        return result( index.row(), index.column());
+        switch( index.column() )
+        {
+        case 0:
+            if( files_.at(index.row())->information("title").isNull())
+                return files_.at(index.row())->information("fileName");
+            else
+                return files_.at(index.row())->information("title");
+        case 1:
+            return files_.at(index.row())->information("fileLastModified");
+        case 2:
+            return files_.at(index.row())->information("fileLastAccessed");
+        case 3:
+        {
+            int bytes = files_.at(index.row())->information("fileSize").toInt();
+            return bytes; // Disabled to sort!
+            if( bytes < 1024 )
+                return tr("%1 b").arg(bytes);
+            if( bytes < 1024 * 1024)
+                return tr("%1 k").arg(bytes / 1024);
+            return tr("%1 MB").arg( bytes / (1024 * 1024));
+        }
+        case 4:
+            return files_.at(index.row())->information("tag").toString();
+        }
+
     }
     else if( role == Qt::DecorationRole && index.column() == 0)
     {
         // mimetype icons
         // testing - image for images
         QString iconFileName;
-        if( files_.at(index.row()).mimetype().startsWith("image"))
-            iconFileName = QUrl(files_.at(index.row()).url()).toLocalFile() ;
+        QString mimetype = files_.at(index.row())->information("mimeType").toString();
+        if( mimetype.startsWith("image"))
+            iconFileName = QUrl(files_.at(index.row())->information("url").toString() ).toLocalFile() ;
         else
-            iconFileName = QString(":/mime/pic/%1.png").arg( files_.at(index.row()).mimetype().replace('/','-'));
+            iconFileName = QString(":/mime/pic/%1.png").arg( mimetype.replace('/','-'));
         if( QFile(iconFileName).exists())
                 return QIcon(iconFileName);    // icon for mime type
         return QIcon(":/mime/pic/unknown.png");
@@ -124,29 +183,5 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
 
 QString SuovaFileQueryModel::result(const int row, const int column) const
 {
-    if( row >= 0 && row < rowCount())
-    {
-        switch( column )
-        {
-        case 0:
-            if( files_.at(row).title().isEmpty())
-                return files_.at(row).fileName();
-            else
-                return files_.at(row).title();
-        case 1:
-            return files_.at(row).modified().date().toString(Qt::SystemLocaleShortDate);
-        case 2:
-        {
-            int bytes = files_.at(row).bytes();
-            if( bytes < 1024 )
-                return tr("%1 b").arg(bytes);
-            if( bytes < 1024 * 1024)
-                return tr("%1 k").arg(bytes / 1024);
-            return tr("%1 MB").arg( bytes / (1024 * 1024));
-        }
-        case 3:
-            return files_.at(row).tags().join(",");
-        }
-    }
-    return QString();
+    return data( index(row,column), Qt::DisplayRole ).toString();
 }

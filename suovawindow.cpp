@@ -22,6 +22,7 @@
 #include "suovafilequerymodel.h"
 
 #include <QTableView>
+#include <QSortFilterProxyModel>
 
 
 
@@ -33,7 +34,12 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     SuovaFileQueryModel* model = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     QTableView* view = new QTableView(this);
-    view->setModel(model);
+    QSortFilterProxyModel* filter = new QSortFilterProxyModel(this);
+    filter->setSourceModel(model);
+    filter->setSortRole(Qt::UserRole);
+    view->setModel(filter);
+    view->sortByColumn(2, Qt::DescendingOrder);
+    view->setSortingEnabled(true);
     view->resizeColumnsToContents();
     setCentralWidget(view);
 }

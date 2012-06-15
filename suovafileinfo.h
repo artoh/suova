@@ -20,21 +20,20 @@
 #ifndef SUOVAFILEINFO_H
 #define SUOVAFILEINFO_H
 
-#include <QStringList>
-#include <QDateTime>
-#include <QMap>
+#include "suovaabstractfileinfo.h"
 
+#include <QDateTime>
 
 /** Stores information about a single file
   */
-class SuovaFileInfo
+class SuovaFileInfo : public SuovaAbstractFileInfo
 {
 public:
     /** Construct a file information
 
         @arg data QStringList containing data (heders) in right order:
         urn, url, file name, title, mimetype, time created, time modified, time accessed, bytes */
-    SuovaFileInfo(QStringList data = QStringList());
+    SuovaFileInfo(QStringList data);
 
 
 public:
@@ -48,16 +47,15 @@ public:
     QDateTime accessed() const { return accessed_; }
     int bytes() const { return bytes_; }
 
-    /** List of tags */
-    QStringList tags() const;
-
     /** Information about specified key
 
-        @arg Field name with full namespace */
-    QString information(QString key) const;
-    QStringList informations(QString key) const;
-    QStringList keys() const { return information_.keys(); }
-    QStringList information() const { return information_.values(); }
+        @arg Field name shortly */
+    QVariant information(const QString& key) const;
+    QList<QVariant> informations(const QString& key) const;
+    /** List of all keys*/
+    QStringList allKeys() const;
+    /** List of all information values, in key order*/
+    QList<QVariant> allInformation() const;
 
     static const QString SelectFields;
 
@@ -71,16 +69,6 @@ private:
     QDateTime modified_;
     QDateTime accessed_;
     int bytes_;
-
-    QMap<QString,QString> information_; /** All information reached by tracker-info*/
-    QStringList tags_;
-
-    bool allInformationFetched_;    /** Have all the information, or only headers*/
-    bool tagsFetched_;
-
-    /** Fetch all information reached by tracker-info*/
-    void fetchAllInformation();
-    void fetchTags();
 };
 
 #endif // SUOVAFILEINFO_H
