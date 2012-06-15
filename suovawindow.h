@@ -20,7 +20,13 @@
 #ifndef SUOVAWINDOW_H
 #define SUOVAWINDOW_H
 
+#include "suovafilequerymodel.h"
+
 #include <QtGui/QMainWindow>
+
+#include <QTableView>
+
+
 
 class SuovaWindow : public QMainWindow
 {
@@ -29,6 +35,14 @@ class SuovaWindow : public QMainWindow
 public:
     SuovaWindow(QWidget *parent = 0);
     ~SuovaWindow();
+
+public slots:
+    void fileSelected( const QModelIndex& index);
+
+protected:
+    QTableView* infoTable_;
+    SuovaFileQueryModel* model_;
+
 };
 
 #endif // SUOVAWINDOW_H

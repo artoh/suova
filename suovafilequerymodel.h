@@ -43,6 +43,8 @@ public:
 
     virtual QString result(const int row, const int column) const;
 
+    SuovaFileFullInfo* fileInfo(const int row) const;
+
     /** Query with where clause*/
     bool setWhere(const QString& where);
 

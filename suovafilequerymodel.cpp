@@ -41,6 +41,12 @@ bool SuovaFileQueryModel::setWhere(const QString &where)
 
 }
 
+SuovaFileFullInfo* SuovaFileQueryModel::fileInfo(const int row) const
+{
+    return files_.value(row,0);
+}
+
+
 void SuovaFileQueryModel::appendRow(const QStringList &rowData)
 {
     // append SuovaFileInfo object

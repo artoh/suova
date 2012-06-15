@@ -24,6 +24,7 @@
 #include <QTableView>
 #include <QSortFilterProxyModel>
 
+#include <QDockWidget>
 
 
 SuovaWindow::SuovaWindow(QWidget *parent)
@@ -32,19 +33,32 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 
     // Testing code: view 100 last modified files
     // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
-    SuovaFileQueryModel* model = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
+    model_ = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     QTableView* view = new QTableView(this);
     QSortFilterProxyModel* filter = new QSortFilterProxyModel(this);
-    filter->setSourceModel(model);
+    filter->setSourceModel(model_);
     filter->setSortRole(Qt::UserRole);
     view->setModel(filter);
     view->sortByColumn(2, Qt::DescendingOrder);
     view->setSortingEnabled(true);
     view->resizeColumnsToContents();
     setCentralWidget(view);
+
+    infoTable_ = new QTableView(this);
+    QDockWidget *dock = new QDockWidget( tr("Information"));
+    dock->setWidget(infoTable_);
+    addDockWidget(Qt::RightDockWidgetArea, dock);
+
+    connect( view, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
 }
 
 SuovaWindow::~SuovaWindow()
 {
     
+}
+
+
+void SuovaWindow::fileSelected(const QModelIndex &index)
+{
+    infoTable_->setModel( model_->fileInfo( index.row()) );
 }
