@@ -25,7 +25,7 @@
 #include <QSortFilterProxyModel>
 
 #include <QDockWidget>
-
+#include <QToolBar>
 
 SuovaWindow::SuovaWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -35,10 +35,10 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     model_ = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     QTableView* view = new QTableView(this);
-    QSortFilterProxyModel* filter = new QSortFilterProxyModel(this);
-    filter->setSourceModel(model_);
-    filter->setSortRole(Qt::UserRole);
-    view->setModel(filter);
+    filter_ = new QSortFilterProxyModel(this);
+    filter_->setSourceModel(model_);
+    filter_->setSortRole(Qt::UserRole);
+    view->setModel(filter_);
     view->sortByColumn(2, Qt::DescendingOrder);
     view->setSortingEnabled(true);
     view->resizeColumnsToContents();
@@ -56,6 +56,13 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     addDockWidget(Qt::RightDockWidgetArea, textDock);
 
     connect( view, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
+
+    QToolBar* quickSearchBar = new QToolBar( tr("Quick search"));
+    searchTextEdit_ = new QLineEdit();
+    quickSearchBar->addWidget(searchTextEdit_);
+    addToolBar(quickSearchBar);
+
+    connect( searchTextEdit_, SIGNAL(editingFinished()), this, SLOT(doSeach()));
 }
 
 SuovaWindow::~SuovaWindow()
@@ -66,6 +73,21 @@ SuovaWindow::~SuovaWindow()
 
 void SuovaWindow::fileSelected(const QModelIndex &index)
 {
-    infoTable_->setModel( model_->fileInfo( index.row()) );
-    textBrowser_->setText( model_->fileInfo( index.row())->information("plainTextContent").toString());
+
+    QModelIndex sourceIndex = filter_->mapToSource(index);
+    infoTable_->setModel( model_->fileInfo( sourceIndex.row()) );
+    textBrowser_->setText( model_->fileInfo( sourceIndex.row())->information("plainTextContent").toString());
+}
+
+
+void SuovaWindow::doSeach()
+{
+    // Test code: full text search
+    if( !searchTextEdit_->text().isEmpty())
+    {
+        // do full text seach
+        QString where = QString("{ ?f  fts:match '%1*'  } ").arg(searchTextEdit_->text());
+        model_->setWhere(where);
+    }
+
 }

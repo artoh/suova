@@ -26,7 +26,8 @@
 
 #include <QTableView>
 #include <QTextBrowser>
-
+#include <QLineEdit>
+#include <QSortFilterProxyModel>
 
 
 class SuovaWindow : public QMainWindow
@@ -39,12 +40,16 @@ public:
 
 public slots:
     void fileSelected( const QModelIndex& index);
+    void doSeach();
 
 protected:
     QTableView* infoTable_;
     QTextBrowser* textBrowser_;
+    QSortFilterProxyModel* filter_;
+
 
     SuovaFileQueryModel* model_;
+    QLineEdit* searchTextEdit_;
 
 };
 

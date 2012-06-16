@@ -63,7 +63,14 @@ bool SuovaAbstractQueryModel::execQuery(QString query)
 
     if( message.arguments().count())
     {
+
+        bool modified = rowCount() > 0; // If there is data, model must emit some signals
+        if( modified)
+            beginRemoveRows(QModelIndex(),0, rowCount()-1);
         clear();            // Clear old result set
+        if(modified)
+            endRemoveRows();
+
         query_ = query;     // Store query string
 
         QVariant firstArgument = message.arguments().first();
@@ -74,8 +81,13 @@ bool SuovaAbstractQueryModel::execQuery(QString query)
         {
             // Append every row to internal result storage
             // There is a virtual function for more hight level functions
+            if( modified)
+                beginInsertRows(QModelIndex(),rowCount(), rowCount()+1);
             appendRow(resultSet.asVariant().toStringList() );
+            if( modified)
+                endInsertRows();
         }
+        emit layoutChanged();
         return true;
     }
 
