@@ -27,6 +27,8 @@
 #include <QDockWidget>
 #include <QToolBar>
 
+#include <QIcon>
+
 SuovaWindow::SuovaWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -58,11 +60,19 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     connect( view, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
 
     QToolBar* quickSearchBar = new QToolBar( tr("Quick search"));
+
+    typeCombo_ = new QComboBox;
+    typeCombo_->addItem(tr("All files"),QVariant());
+    typeCombo_->addItem(QIcon(":/mime/pic/text-plain.png"), tr("Text documents"), QVariant("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument"));
+    typeCombo_->addItem(tr("Image files"), QVariant("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"));
+    quickSearchBar->addWidget(typeCombo_);
+
     searchTextEdit_ = new QLineEdit();
     quickSearchBar->addWidget(searchTextEdit_);
     addToolBar(quickSearchBar);
 
     connect( searchTextEdit_, SIGNAL(editingFinished()), this, SLOT(doSeach()));
+    connect( typeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
 }
 
 SuovaWindow::~SuovaWindow()
@@ -82,12 +92,21 @@ void SuovaWindow::fileSelected(const QModelIndex &index)
 
 void SuovaWindow::doSeach()
 {
+    QString typeWhere;
+    QString type = typeCombo_->itemData(typeCombo_->currentIndex()).toString();
+    if( !type.isEmpty())
+        typeWhere= QString("; rdf:type '%1'").arg(type);
+
+
     // Test code: full text search
     if( !searchTextEdit_->text().isEmpty())
     {
         // do full text seach
-        QString where = QString("{ ?f  fts:match '%1*'  } ").arg(searchTextEdit_->text());
+        QString where = QString("{ ?f  fts:match '%1*' %2 } ").arg(searchTextEdit_->text()).arg(typeWhere);
         model_->setWhere(where);
     }
+    else
+        // do last accessedseach
+        model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm %1 } ORDER BY DESC(?pvm) LIMIT 100 ").arg(typeWhere));
 
 }

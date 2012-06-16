@@ -28,6 +28,7 @@
 #include <QTextBrowser>
 #include <QLineEdit>
 #include <QSortFilterProxyModel>
+#include <QComboBox>
 
 
 class SuovaWindow : public QMainWindow
@@ -50,6 +51,7 @@ protected:
 
     SuovaFileQueryModel* model_;
     QLineEdit* searchTextEdit_;
+    QComboBox* typeCombo_;
 
 };
 

@@ -119,10 +119,7 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
         switch( index.column() )
         {
         case 0:
-            if( files_.at(index.row())->information("title").isNull())
-                return files_.at(index.row())->information("fileName");
-            else
-                return files_.at(index.row())->information("title");
+            return files_.at(index.row())->information("fileName");
         case 1:
             return files_.at(index.row())->information("fileLastModified").toDate();
         case 2:
@@ -131,9 +128,9 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
         {
             int bytes = files_.at(index.row())->information("fileSize").toInt();
             if( bytes < 1024 )
-                return tr("%1 b").arg(bytes);
+                return tr("%1 B").arg(bytes);
             if( bytes < 1024 * 1024)
-                return tr("%1 k").arg(bytes / 1024);
+                return tr("%1 kB").arg(bytes / 1024);
             return tr("%1 MB").arg( bytes / (1024 * 1024));
         }
         case 4:
