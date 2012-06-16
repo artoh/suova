@@ -25,6 +25,7 @@
 #include <QtGui/QMainWindow>
 
 #include <QTableView>
+#include <QTextBrowser>
 
 
 
@@ -41,6 +42,8 @@ public slots:
 
 protected:
     QTableView* infoTable_;
+    QTextBrowser* textBrowser_;
+
     SuovaFileQueryModel* model_;
 
 };

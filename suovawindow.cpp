@@ -49,6 +49,12 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     dock->setWidget(infoTable_);
     addDockWidget(Qt::RightDockWidgetArea, dock);
 
+    textBrowser_ = new QTextBrowser(this);
+    textBrowser_->setReadOnly(true);
+    QDockWidget *textDock = new QDockWidget( tr("Preview"));
+    textDock->setWidget( textBrowser_);
+    addDockWidget(Qt::RightDockWidgetArea, textDock);
+
     connect( view, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
 }
 
@@ -61,4 +67,5 @@ SuovaWindow::~SuovaWindow()
 void SuovaWindow::fileSelected(const QModelIndex &index)
 {
     infoTable_->setModel( model_->fileInfo( index.row()) );
+    textBrowser_->setText( model_->fileInfo( index.row())->information("plainTextContent").toString());
 }
