@@ -24,14 +24,14 @@
 #include <QTableView>
 #include <QSortFilterProxyModel>
 
-#include <QDebug>
-
 #include <QDockWidget>
 #include <QToolBar>
-#include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
-
 
 #include <QIcon>
+
+#include <QDebug>
+#include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
+
 
 SuovaWindow::SuovaWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -54,17 +54,12 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     QDockWidget *dock = new QDockWidget( tr("Information"));
     dock->setWidget(infoTable_);
     addDockWidget(Qt::RightDockWidgetArea, dock);
-#ifdef MEEGO_EDITION_HARMATTAN
 
-    qDebug() << "We are on harmattan!!!";
-#endif
 
     textBrowser_ = new QTextBrowser(this);
     textBrowser_->setReadOnly(true);
     QDockWidget *textDock = new QDockWidget( tr("Preview"));
-#ifndef MEEGO_EDITION_HARMATTAN
-    qDebug() << "We are NOT on harmattan!";
-#endif
+
     textDock->setWidget( textBrowser_);
     addDockWidget(Qt::RightDockWidgetArea, textDock);
 
@@ -84,6 +79,17 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 
     connect( searchTextEdit_, SIGNAL(editingFinished()), this, SLOT(doSeach()));
     connect( typeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+
+
+#ifdef MEEGO_EDITION_HARMATTAN
+
+    qDebug() << "We are on harmattan!!!";
+#endif
+
+
+#ifndef MEEGO_EDITION_HARMATTAN
+    qDebug() << "We are NOT on harmattan!";
+#endif
 }
 
 SuovaWindow::~SuovaWindow()
