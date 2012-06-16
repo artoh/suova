@@ -20,15 +20,17 @@
 #ifndef SUOVAQUERYMODEL_H
 #define SUOVAQUERYMODEL_H
 
-#include <QAbstractTableModel>
+
+#include "suovaabstractquerymodel.h"
 
 #include <QStringList>
+#include <QVector>
 
 /** Model for SPARQL query
 
-    This is a most low lever query model.
+    Storing results in table
   */
-class SuovaQueryModel : public QAbstractTableModel
+class SuovaQueryModel : public SuovaAbstractQueryModel
 {
     Q_OBJECT
 public:
@@ -37,21 +39,17 @@ public:
     int rowCount(const QModelIndex& /* parent */ = QModelIndex()) const;
     int columnCount(const QModelIndex& /* parent */ = QModelIndex()) const;
 
-    QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     /** Return single result item as string */
     virtual QString result(const int row, const int column) const;
-
-    /** SPARQL query */
-    QString query() const { return query_; }
 
 
     /** Set and exec SPARQL query
 
       @arg query Query to execute
       @returns true is successed */
-    bool setQuery( QString query );
+    bool setQuery( const QString& query );
 
     virtual void clear();
 
@@ -65,8 +63,7 @@ protected:
 private:
     void storeQuery( const QString& query); /** Store query command*/
 
-    QList<QStringList> result_; /** Results for query */
-    QString query_; /** SPARQL query */
+    QVector<QStringList> result_; /** Results for query */
     QStringList columnHeaders_;
 };
 

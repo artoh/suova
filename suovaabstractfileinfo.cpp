@@ -1,5 +1,5 @@
 /**************************************************************************
-**  suovawindow.h
+**  suovaabstractfileinfo.cpp
 **  Copyright (c) 2012 Arto Hyvättinen 
 **
 **  This program is free software: you can redistribute it and/or modify
@@ -14,45 +14,22 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**    12.6.2012
+**  SuovaAbstractFileInfo  15.6.2012
 **************************************************************************/
 
-#ifndef SUOVAWINDOW_H
-#define SUOVAWINDOW_H
+#include "suovaabstractfileinfo.h"
 
-#include "suovafilequerymodel.h"
-
-#include <QtGui/QMainWindow>
-
-#include <QTableView>
-#include <QTextBrowser>
-#include <QLineEdit>
-#include <QSortFilterProxyModel>
-#include <QComboBox>
-
-
-class SuovaWindow : public QMainWindow
+SuovaAbstractFileInfo::SuovaAbstractFileInfo()
 {
-    Q_OBJECT
-    
-public:
-    SuovaWindow(QWidget *parent = 0);
-    ~SuovaWindow();
-
-public slots:
-    void fileSelected( const QModelIndex& index);
-    void doSeach();
-
-protected:
-    QTableView* infoTable_;
-    QTextBrowser* textBrowser_;
-    QSortFilterProxyModel* filter_;
+}
 
 
-    SuovaFileQueryModel* model_;
-    QLineEdit* searchTextEdit_;
-    QComboBox* typeCombo_;
-
-};
-
-#endif // SUOVAWINDOW_H
+QString SuovaAbstractFileInfo::withoutContext(const QString &key) const
+{
+    // Remove anything before / or : or #
+    QString result = key;
+    result.remove(0, key.lastIndexOf('/')+1);
+    result.remove(0, result.lastIndexOf(":")+1);
+    result.remove(0, result.lastIndexOf("#")+1);
+    return result;
+}

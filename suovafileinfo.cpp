@@ -20,8 +20,7 @@
 #include "suovafileinfo.h"
 #include "suovaquerymodel.h"
 
-SuovaFileInfo::SuovaFileInfo(QStringList data) :
-    allInformationFetched_(false)
+SuovaFileInfo::SuovaFileInfo(QStringList data)
 {
     if( data.count() > 8)
     {
@@ -41,31 +40,60 @@ SuovaFileInfo::SuovaFileInfo(QStringList data) :
 }
 
 
-QString SuovaFileInfo::information(QString key)
+QVariant SuovaFileInfo::information(const QString &key) const
 {
-    if( !allInformationFetched_)
-        fetchAllInformation();
-    return information_.value(key);
+    QString shortKey = withoutContext(key); // nie:title --> title
+
+    if( shortKey == "fileLastAccessed")
+        return accessed();
+    else if( shortKey == "fileLastModified")
+        return modified();
+    else if( shortKey == "fileName")
+        return fileName();
+    else if( shortKey == "fileSize")
+        return bytes();
+    else if( shortKey == "contentCreated")
+        return created();
+    else if( shortKey == "isStoredAs")
+        return urn();
+    else if( shortKey == "mimeType")
+        return mimetype();
+    else if( shortKey == "title")
+        return title();
+    else if( shortKey == "url")
+        return url();
+
+    return QVariant();
+}
+
+QList<QVariant> SuovaFileInfo::informations(const QString &key) const
+{
+    // Return single item as list.
+    QList<QVariant> list;
+    list.append(information(key));
+    return list;
+}
+
+QStringList SuovaFileInfo::allKeys() const
+{
+    QStringList keys;
+    keys << "fileAccessed" << "fileLastModified" << "fileName"
+         << "fileSize" << "contentCreated" << "isStoredAs"
+         << "mimeType" << "title" << "url";
+    return keys;
+}
+
+QList<QVariant> SuovaFileInfo::allInformation() const
+{
+    QList<QVariant> information;
+    information << accessed() << modified() << fileName()
+                << bytes() << created() << urn()
+                << mimetype() << title() << url();
+    return information;
 }
 
 
-void SuovaFileInfo::fetchAllInformation()
-{
-    SuovaQueryModel results;
-    QString queryString = QString("SELECT ?predicate ?object ( EXISTS { ?predicate rdfs:range [ rdfs:subClassOf rdfs:Resource ] } ) WHERE { <%1> ?predicate ?object }").arg(urn());
 
-    if(results.setQuery(queryString))
-    {
-        // Fetch query from model
-        for(int i=0; i < results.rowCount(); i++)
-        {
-            QString key = results.result(i,0);
-            QString value = results.result(i,1);
-            information_.insertMulti(key, value);
-        }
-        allInformationFetched_ = true;
-    }
-}
 
 
 const QString SuovaFileInfo::SelectFields = "?f nie:url(?f) nfo:fileName(?f) nie:title(?f) nie:mimeType(?f) "
