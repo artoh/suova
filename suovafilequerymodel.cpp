@@ -81,7 +81,7 @@ QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientatio
     else if( role == Qt::DisplayRole)
     {
         if( orientation == Qt::Vertical)
-            return QVariant(section+1);   // row number
+            return QVariant();   //
         else
         {
             switch(section)

@@ -67,12 +67,20 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     typeCombo_->addItem(tr("Image files"), QVariant("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"));
     quickSearchBar->addWidget(typeCombo_);
 
+    searchTypeCombo_ = new QComboBox;
+    searchTypeCombo_->addItem( tr("File name"), QVariant("nfo:fileName"));
+    searchTypeCombo_->addItem( tr("Contents"), QVariant("fts:match"));
+    searchTypeCombo_->addItem( tr("Title"), QVariant("nie:title"));
+    quickSearchBar->addWidget(searchTypeCombo_);
+
+
     searchTextEdit_ = new QLineEdit();
     quickSearchBar->addWidget(searchTextEdit_);
     addToolBar(quickSearchBar);
 
     connect( searchTextEdit_, SIGNAL(editingFinished()), this, SLOT(doSeach()));
     connect( typeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+    connect( searchTypeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
 }
 
 SuovaWindow::~SuovaWindow()
@@ -95,18 +103,25 @@ void SuovaWindow::doSeach()
     QString typeWhere;
     QString type = typeCombo_->itemData(typeCombo_->currentIndex()).toString();
     if( !type.isEmpty())
-        typeWhere= QString("; rdf:type '%1'").arg(type);
+        typeWhere= QString("rdf:type '%1';").arg(type);
 
 
     // Test code: full text search
     if( !searchTextEdit_->text().isEmpty())
     {
+        QString where;
         // do full text seach
-        QString where = QString("{ ?f  fts:match '%1*' %2 } ").arg(searchTextEdit_->text()).arg(typeWhere);
+        if( searchTypeCombo_->currentIndex()==1)
+            where = QString("{ ?f %2 fts:match '%1*' } ").arg(searchTextEdit_->text()).arg(typeWhere);
+        else
+            where = QString("{ ?f %1  %2 ?name . FILTER regex(?name, '%3')  }").arg(typeWhere).arg( searchTypeCombo_->itemData(searchTypeCombo_->currentIndex()).toString()).arg(searchTextEdit_->text()) ;
         model_->setWhere(where);
     }
     else
         // do last accessedseach
-        model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm %1 } ORDER BY DESC(?pvm) LIMIT 100 ").arg(typeWhere));
+        if( type.isEmpty())
+            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm } ORDER BY DESC(?pvm) LIMIT 100 "));
+        else
+            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm ; rdf:type '%1'} ORDER BY DESC(?pvm) LIMIT 100 ").arg(type));
 
 }
