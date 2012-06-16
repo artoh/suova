@@ -52,6 +52,7 @@ protected:
     SuovaFileQueryModel* model_;
     QLineEdit* searchTextEdit_;
     QComboBox* typeCombo_;
+    QComboBox* searchTypeCombo_;
 
 };
 
