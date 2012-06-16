@@ -23,6 +23,10 @@
 
 #include <QTableView>
 
+#include <QDebug>
+
+#include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
+
 
 
 SuovaWindow::SuovaWindow(QWidget *parent)
@@ -36,6 +40,15 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     view->setModel(model);
     view->resizeColumnsToContents();
     setCentralWidget(view);
+
+#ifdef MEEGO_EDITION_HARMATTAN
+
+    qDebug() << "We are on harmattan!!!";
+#endif
+
+#ifndef MEEGO_EDITION_HARMATTAN
+    qDebug() << "We are NOT on harmattan!";
+#endif
 }
 
 SuovaWindow::~SuovaWindow()
