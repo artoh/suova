@@ -33,6 +33,8 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     : QMainWindow(parent)
 {
 
+    setWindowIcon( QIcon(":/icon/pic/suova.png"));
+
     // Testing code: view 100 last modified files
     // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     model_ = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
