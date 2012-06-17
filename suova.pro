@@ -29,7 +29,8 @@ HEADERS  += suovawindow.h \
 
 OTHER_FILES += \
     README.txt \
-    pic/suova.png
+    pic/suova.png \
+    pic/suova.svg
 
 RESOURCES += \
     pictures.qrc
