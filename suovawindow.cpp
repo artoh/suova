@@ -20,6 +20,7 @@
 #include "suovawindow.h"
 
 #include "suovafilequerymodel.h"
+#include "suovaquerymodel.h"
 
 #include <QTableView>
 #include <QSortFilterProxyModel>
@@ -78,11 +79,21 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 
     searchTextEdit_ = new QLineEdit();
     quickSearchBar->addWidget(searchTextEdit_);
-    addToolBar(quickSearchBar);
 
+    keywordCombo_ = new QComboBox;
+    SuovaQueryModel keywordQuestion(this,"SELECT DISTINCT ?k where {?f nie:keyword ?k . } ORDER BY ?k");
+    keywordCombo_->addItem("Keyword", QVariant());
+    for( int i=0; i < keywordQuestion.rowCount(); i++ )
+    {
+        keywordCombo_->addItem(keywordQuestion.result(i,0), QVariant(keywordQuestion.result(i,0)));
+    }
+    quickSearchBar->addWidget(keywordCombo_);
+
+    addToolBar( quickSearchBar);
     connect( searchTextEdit_, SIGNAL(editingFinished()), this, SLOT(doSeach()));
     connect( typeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
     connect( searchTypeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+    connect( keywordCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
 }
 
 SuovaWindow::~SuovaWindow()
@@ -103,9 +114,13 @@ void SuovaWindow::fileSelected(const QModelIndex &index)
 void SuovaWindow::doSeach()
 {
     QString typeWhere;
+    QString keyWhere;
     QString type = typeCombo_->itemData(typeCombo_->currentIndex()).toString();
     if( !type.isEmpty())
         typeWhere= QString("rdf:type '%1';").arg(type);
+    QString keyword = keywordCombo_->itemData( keywordCombo_->currentIndex()).toString();
+    if( !keyword.isEmpty())
+        keyWhere = QString("nie:keyword '%1' ;").arg(keyword);
 
 
     // Test code: full text search
@@ -114,16 +129,20 @@ void SuovaWindow::doSeach()
         QString where;
         // do full text seach
         if( searchTypeCombo_->currentIndex()==1)
-            where = QString("{ ?f %2 fts:match '%1*' } ").arg(searchTextEdit_->text()).arg(typeWhere);
+            where = QString("{ ?f %2 %3 fts:match '%1*' } ").arg(searchTextEdit_->text()).arg(typeWhere).arg(keyWhere);
         else
-            where = QString("{ ?f %1  %2 ?name . FILTER regex(?name, '%3')  }").arg(typeWhere).arg( searchTypeCombo_->itemData(searchTypeCombo_->currentIndex()).toString()).arg(searchTextEdit_->text()) ;
+            where = QString("{ ?f %1  %4 %2 ?name . FILTER regex(?name, '%3')  }").arg(typeWhere).arg( searchTypeCombo_->itemData(searchTypeCombo_->currentIndex()).toString()).arg(searchTextEdit_->text()).arg(keyWhere) ;
         model_->setWhere(where);
     }
     else
         // do last accessedseach
+    {
+        if( !keyword.isEmpty())
+            keyWhere = QString("; nie:keyword '%1' ").arg(keyword);
         if( type.isEmpty())
-            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm } ORDER BY DESC(?pvm) LIMIT 100 "));
+            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm %1} ORDER BY DESC(?pvm) LIMIT 100 ").arg(keyWhere));
         else
-            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm ; rdf:type '%1'} ORDER BY DESC(?pvm) LIMIT 100 ").arg(type));
+            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm ; rdf:type '%1' %2} ORDER BY DESC(?pvm) LIMIT 100 ").arg(type).arg(keyWhere));
+    }
 
 }
