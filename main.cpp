@@ -23,6 +23,10 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    a.setApplicationName("Suova");
+    a.setOrganizationName("Suova");
+
     SuovaWindow w;
     w.show();
     
