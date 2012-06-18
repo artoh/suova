@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     suovafilequerymodel.cpp \
     suovaabstractquerymodel.cpp \
     suovafilefullinfo.cpp \
-    suovaabstractfileinfo.cpp
+    suovaabstractfileinfo.cpp \
+    suovasparqlwidget.cpp
 
 HEADERS  += suovawindow.h \
     suovaquerymodel.h \
@@ -25,7 +26,8 @@ HEADERS  += suovawindow.h \
     suovafilequerymodel.h \
     suovaabstractquerymodel.h \
     suovafilefullinfo.h \
-    suovaabstractfileinfo.h
+    suovaabstractfileinfo.h \
+    suovasparqlwidget.h
 
 OTHER_FILES += \
     README.txt \
