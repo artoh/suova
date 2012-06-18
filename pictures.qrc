@@ -13,4 +13,7 @@
         <file>pic/text-xml.png</file>
         <file>pic/unknown.png</file>
     </qresource>
+    <qresource prefix="/icon">
+        <file>pic/suova.png</file>
+    </qresource>
 </RCC>

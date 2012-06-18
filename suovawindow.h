@@ -53,6 +53,8 @@ protected:
     QLineEdit* searchTextEdit_;
     QComboBox* typeCombo_;
     QComboBox* searchTypeCombo_;
+    QComboBox* keywordCombo_;
+    QComboBox* tagCombo_;
 
 };
 

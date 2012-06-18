@@ -20,6 +20,7 @@
 #include "suovawindow.h"
 
 #include "suovafilequerymodel.h"
+#include "suovaquerymodel.h"
 
 #include <QTableView>
 #include <QSortFilterProxyModel>
@@ -36,6 +37,8 @@
 SuovaWindow::SuovaWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+
+    setWindowIcon( QIcon(":/icon/pic/suova.png"));
 
     // Testing code: view 100 last modified files
     // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
@@ -66,12 +69,13 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     connect( view, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
 
     QToolBar* quickSearchBar = new QToolBar( tr("Quick search"));
+    QToolBar* filterBar = new QToolBar( tr("Filter"));
 
     typeCombo_ = new QComboBox;
     typeCombo_->addItem(tr("All files"),QVariant());
     typeCombo_->addItem(QIcon(":/mime/pic/text-plain.png"), tr("Text documents"), QVariant("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument"));
     typeCombo_->addItem(tr("Image files"), QVariant("http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"));
-    quickSearchBar->addWidget(typeCombo_);
+    filterBar->addWidget(typeCombo_);
 
     searchTypeCombo_ = new QComboBox;
     searchTypeCombo_->addItem( tr("File name"), QVariant("nfo:fileName"));
@@ -82,11 +86,34 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 
     searchTextEdit_ = new QLineEdit();
     quickSearchBar->addWidget(searchTextEdit_);
-    addToolBar(quickSearchBar);
 
+    keywordCombo_ = new QComboBox;
+    SuovaQueryModel keywordQuestion(this,"SELECT DISTINCT ?k where {?f nie:keyword ?k . } ORDER BY ?k");
+    keywordCombo_->addItem(tr("Keyword"), QVariant());
+    for( int i=0; i < keywordQuestion.rowCount(); i++ )
+    {
+        keywordCombo_->addItem(keywordQuestion.result(i,0), QVariant(keywordQuestion.result(i,0)));
+    }
+    filterBar->addWidget(keywordCombo_);
+
+
+    tagCombo_ = new QComboBox;
+    keywordQuestion.setQuery("SELECT  ?labels WHERE {   ?tags a nao:Tag ;     nao:prefLabel ?labels . } ORDER BY ASC(?labels)");
+    tagCombo_->addItem( tr("Tag"),QVariant());
+    for( int i=0; i < keywordQuestion.rowCount(); i++ )
+    {
+        tagCombo_->addItem(keywordQuestion.result(i,0), QVariant(keywordQuestion.result(i,0)));
+    }
+    filterBar->addWidget(tagCombo_);
+
+
+    addToolBar( quickSearchBar);
+    addToolBar( filterBar);
     connect( searchTextEdit_, SIGNAL(editingFinished()), this, SLOT(doSeach()));
     connect( typeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
     connect( searchTypeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+    connect( keywordCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+    connect( tagCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
 
 #ifdef MEEGO_EDITION_HARMATTAN
 
@@ -116,11 +143,20 @@ void SuovaWindow::fileSelected(const QModelIndex &index)
 
 void SuovaWindow::doSeach()
 {
+    // DIRTY test code to make searches!
+
     QString typeWhere;
+    QString keyWhere;
     QString type = typeCombo_->itemData(typeCombo_->currentIndex()).toString();
     if( !type.isEmpty())
         typeWhere= QString("rdf:type '%1';").arg(type);
+    QString keyword = keywordCombo_->itemData( keywordCombo_->currentIndex()).toString();
+    if( !keyword.isEmpty())
+        keyWhere = QString("nie:keyword '%1' ;").arg(keyword);
 
+    QString tag = tagCombo_->itemData( tagCombo_->currentIndex()).toString();
+    if( !tag.isEmpty())
+        keyWhere += QString("nao:hasTag [nao:prefLabel '%1'] ; ").arg(tag);
 
     // Test code: full text search
     if( !searchTextEdit_->text().isEmpty())
@@ -128,16 +164,23 @@ void SuovaWindow::doSeach()
         QString where;
         // do full text seach
         if( searchTypeCombo_->currentIndex()==1)
-            where = QString("{ ?f %2 fts:match '%1*' } ").arg(searchTextEdit_->text()).arg(typeWhere);
+            where = QString("{ ?f %2 %3 fts:match '%1*' } ").arg(searchTextEdit_->text()).arg(typeWhere).arg(keyWhere);
         else
-            where = QString("{ ?f %1  %2 ?name . FILTER regex(?name, '%3')  }").arg(typeWhere).arg( searchTypeCombo_->itemData(searchTypeCombo_->currentIndex()).toString()).arg(searchTextEdit_->text()) ;
+            where = QString("{ ?f %1  %4 %2 ?name . FILTER regex(?name, '%3')  }").arg(typeWhere).arg( searchTypeCombo_->itemData(searchTypeCombo_->currentIndex()).toString()).arg(searchTextEdit_->text()).arg(keyWhere) ;
         model_->setWhere(where);
     }
     else
         // do last accessedseach
+    {
+        keyWhere.clear();
+        if( !keyword.isEmpty())
+            keyWhere = QString("; nie:keyword '%1' ").arg(keyword);
+        if( !tag.isEmpty())
+            keyWhere += QString(" ; nao:hasTag [nao:prefLabel '%1'] ").arg(tag);
         if( type.isEmpty())
-            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm } ORDER BY DESC(?pvm) LIMIT 100 "));
+            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm %1} ORDER BY DESC(?pvm) LIMIT 100 ").arg(keyWhere));
         else
-            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm ; rdf:type '%1'} ORDER BY DESC(?pvm) LIMIT 100 ").arg(type));
+            model_->setWhere(QString("{ ?f nfo:fileLastAccessed ?pvm ; rdf:type '%1' %2} ORDER BY DESC(?pvm) LIMIT 100 ").arg(type).arg(keyWhere));
+    }
 
 }
