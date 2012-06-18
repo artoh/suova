@@ -30,6 +30,8 @@
 
 #include <QIcon>
 
+#include <QSettings>
+
 SuovaWindow::SuovaWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -108,10 +110,23 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     connect( searchTypeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
     connect( keywordCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
     connect( tagCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+
+    quickSearchBar->setObjectName("Quick Search Bar");
+    filterBar->setObjectName("Filter Bar");
+    dock->setObjectName("Dock");
+    textDock->setObjectName("Text Dock");
+
+
+    QSettings settings("Suova","Suova");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("state").toByteArray());
 }
 
 SuovaWindow::~SuovaWindow()
 {
+     QSettings settings("Suova","Suova");
+     settings.setValue("geometry", saveGeometry());
+     settings.setValue("state",saveState());
     
 }
 
