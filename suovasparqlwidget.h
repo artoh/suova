@@ -60,7 +60,7 @@ public slots:
     /** Open clicked url or urn */
     void cellClicked(const QModelIndex& index);
     /** Execute a saved query*/
-    void execute(const QString& query);
+    void executeSaved( QListWidgetItem* item);
 
 
 private:

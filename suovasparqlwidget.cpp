@@ -81,7 +81,7 @@ SuovaSparqlWidget::SuovaSparqlWidget(const QString& query, QWidget *parent) :
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveQuery()));
     connect( backButton, SIGNAL(clicked()), this, SLOT(historyBack()));
     connect( resultTable_, SIGNAL(clicked(QModelIndex)), this, SLOT(cellClicked(QModelIndex)));
-    connect( savedList_, SIGNAL(currentTextChanged(QString)), this, SLOT(execute(QString)));
+    connect( savedList_, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(executeSaved(QListWidgetItem*)));
 
     // Load settings
     QSettings settings;
@@ -134,10 +134,10 @@ void SuovaSparqlWidget::historyBack()
     }
 }
 
-void SuovaSparqlWidget::execute(const QString &query)
+void SuovaSparqlWidget::executeSaved(QListWidgetItem *item)
 {
     // Execute query
-    queryLine_->setText( query );
+    queryLine_->setText( item->text() );
     execute();
 }
 
