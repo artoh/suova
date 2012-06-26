@@ -27,22 +27,42 @@ HEADERS  += suovawindow.h \
     suovafilefullinfo.h \
     suovaabstractfileinfo.h
 
+# Please do not modify the following two lines. Required for deployment.
+include(qmlapplicationviewer/qmlapplicationviewer.pri)
+qtcAddDeployment()
+
 OTHER_FILES += \
     README.txt \
     pic/suova.png \
-    pic/suova.svg
+    pic/suova.svg \
     qtc_packaging/debian_harmattan/rules \
     qtc_packaging/debian_harmattan/README \
     qtc_packaging/debian_harmattan/manifest.aegis \
     qtc_packaging/debian_harmattan/copyright \
     qtc_packaging/debian_harmattan/control \
     qtc_packaging/debian_harmattan/compat \
-    qtc_packaging/debian_harmattan/changelog
+    qtc_packaging/debian_harmattan/changelog \
+    qml/Suova/MainPage.qml \
+    qml/main.qml \
+    qml/MainPage.qml
 
 RESOURCES += \
-    pictures.qrc
+    pictures.qrc \
+    qml.qrc
 
 contains(MEEGO_EDITION,harmattan) {
     target.path = /opt/suova/bin
     INSTALLS += target
+
+# Speed up launching on MeeGo/Harmattan when using applauncherd daemon
+CONFIG += qdeclarative-boostable
+
+## Add more folders to ship with the application, here
+#folder_01.source = qml/Suova
+#folder_01.target = qml
+#DEPLOYMENTFOLDERS = folder_01
+
 }
+
+
+

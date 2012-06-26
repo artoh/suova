@@ -19,12 +19,39 @@
 
 #include <QtGui/QApplication>
 #include "suovawindow.h"
+#include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
+#include "qmlapplicationviewer.h"
+#include <QtDeclarative/QDeclarativeView>
 
 int main(int argc, char *argv[])
 {
+    //Desktop version
+
+#ifndef MEEGO_EDITION_HARMATTAN
+
     QApplication a(argc, argv);
+
     SuovaWindow w;
     w.show();
-    
     return a.exec();
+#endif
+    
+
+    //Harmattan version
+
+#ifdef MEEGO_EDITION_HARMATTAN
+    QScopedPointer<QApplication> app(createApplication(argc, argv));
+
+//    QmlApplicationViewer viewer;
+    QDeclarativeView view;
+//    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+//    viewer.setMainQmlFile(QUrl("qrc:/qml/main.qml"));
+//    viewer.showExpanded();
+    view.setSource(QUrl("qrc:/qml/main.qml"));
+    view.show();
+
+    return app->exec();
+#endif
+
+
 }
