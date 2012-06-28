@@ -22,6 +22,8 @@
 #include "suovafilequerymodel.h"
 #include "suovaquerymodel.h"
 
+#include "suovasparqlwidget.h"
+
 #include <QTableView>
 #include <QSortFilterProxyModel>
 
@@ -29,6 +31,10 @@
 #include <QToolBar>
 
 #include <QIcon>
+
+#include <QSettings>
+#include <QPushButton>
+#include <QItemSelectionModel>
 
 #include <QDebug>
 #include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
@@ -43,15 +49,15 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     // Testing code: view 100 last modified files
     // SuovaQueryModel* model = new SuovaQueryModel(this,"SELECT ?f nie:url(?f) ?pvm WHERE { ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
     model_ = new SuovaFileQueryModel(this, "{ ?f nfo:fileLastAccessed ?pvm  } ORDER BY DESC(?pvm) LIMIT 100");
-    QTableView* view = new QTableView(this);
+    view_ = new QTableView(this);
     filter_ = new QSortFilterProxyModel(this);
     filter_->setSourceModel(model_);
     filter_->setSortRole(Qt::UserRole);
-    view->setModel(filter_);
-    view->sortByColumn(2, Qt::DescendingOrder);
-    view->setSortingEnabled(true);
-    view->resizeColumnsToContents();
-    setCentralWidget(view);
+    view_->setModel(filter_);
+    view_->sortByColumn(2, Qt::DescendingOrder);
+    view_->setSortingEnabled(true);
+    view_->resizeColumnsToContents();
+    setCentralWidget(view_);
 
     infoTable_ = new QTableView(this);
     QDockWidget *dock = new QDockWidget( tr("Information"));
@@ -66,7 +72,7 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     textDock->setWidget( textBrowser_);
     addDockWidget(Qt::RightDockWidgetArea, textDock);
 
-    connect( view, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
+    connect( view_, SIGNAL(clicked(QModelIndex)), this, SLOT(fileSelected(QModelIndex)));
 
     QToolBar* quickSearchBar = new QToolBar( tr("Quick search"));
     QToolBar* filterBar = new QToolBar( tr("Filter"));
@@ -106,6 +112,10 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     }
     filterBar->addWidget(tagCombo_);
 
+    QPushButton* sparqlButton = new QPushButton( tr("Custom query"));
+    filterBar->addSeparator();
+    filterBar->addWidget(sparqlButton);
+
 
     addToolBar( quickSearchBar);
     addToolBar( filterBar);
@@ -114,6 +124,12 @@ SuovaWindow::SuovaWindow(QWidget *parent)
     connect( searchTypeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
     connect( keywordCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
     connect( tagCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(doSeach()));
+    connect( sparqlButton, SIGNAL(clicked()), this, SLOT(sparql()));
+
+    quickSearchBar->setObjectName("Quick Search Bar");
+    filterBar->setObjectName("Filter Bar");
+    dock->setObjectName("Dock");
+    textDock->setObjectName("Text Dock");
 
 #ifdef MEEGO_EDITION_HARMATTAN
 
@@ -124,13 +140,34 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 #ifndef MEEGO_EDITION_HARMATTAN
     qDebug() << "We are NOT on harmattan!";
 #endif
+
+    QSettings settings;
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("state").toByteArray());
 }
 
 SuovaWindow::~SuovaWindow()
 {
+     QSettings settings;
+     settings.setValue("geometry", saveGeometry());
+     settings.setValue("state",saveState());
     
 }
 
+
+void SuovaWindow::sparql()
+{
+    // Open SPARQL widget
+    QString query;
+    QModelIndexList selected = view_->selectionModel()->selectedIndexes();
+    if( !selected.isEmpty() )
+        query = QString("SELECT ?predicate ?object WHERE { <%1> ?predicate ?object }")
+                .arg( model_->fileInfo( filter_->mapToSource(selected.first()).row())->urn() );
+
+    SuovaSparqlWidget* sparWidget = new SuovaSparqlWidget(query);
+    sparWidget->setAttribute(Qt::WA_DeleteOnClose);
+    sparWidget->show();
+}
 
 void SuovaWindow::fileSelected(const QModelIndex &index)
 {

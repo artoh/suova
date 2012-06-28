@@ -42,6 +42,7 @@ public:
 public slots:
     void fileSelected( const QModelIndex& index);
     void doSeach();
+    void sparql();
 
 protected:
     QTableView* infoTable_;
@@ -55,6 +56,7 @@ protected:
     QComboBox* searchTypeCombo_;
     QComboBox* keywordCombo_;
     QComboBox* tagCombo_;
+    QTableView* view_;
 
 };
 
