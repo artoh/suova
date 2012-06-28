@@ -14,7 +14,7 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  MainPage.ml  19.6.2012
+**  MainPage.qml  28.6.2012
 **************************************************************************/
 
 import QtQuick 1.1
@@ -30,13 +30,110 @@ Page {
         visible: false
     }
 
+    Button
+    {
+        id: searchTypeButton
+        text: "Search type"
+        onClicked: {searchTypeSelectionDialog.open();}
+    }
+
+
+
+    SelectionDialog
+    {
+        id: searchTypeSelectionDialog
+        titleText: qsTr("Search type")
+        selectedIndex: 0
+
+        model: ListModel
+        {
+            ListElement { name: "File name" }
+            ListElement { name: "Contents" }
+            ListElement { name: "Title" }
+        }
+
+    }
+
+
+    TextField
+    {
+        id: searchTextField
+        anchors.top: searchTypeButton.bottom
+    }
+
+    Button
+    {
+        id: fileTypeButton
+        text: "File type"
+        onClicked: {fileTypeSelectionDialog.open()}
+
+        anchors.top: searchTextField.bottom
+    }
+
+    SelectionDialog
+    {
+        id: fileTypeSelectionDialog
+        titleText: "File type"
+        selectedIndex: 0
+
+        model: ListModel
+        {
+            ListElement { name: "All files" }
+            ListElement { name: "Text documents" }
+            ListElement { name: "Image files" }
+        }
+    }
+
+    Button
+    {
+        id: keywordButton
+        text: "Keyword"
+        onClicked: {keywordSelectionDialog.open()}
+
+        anchors.top: fileTypeButton.bottom
+
+    }
+
+    SelectionDialog
+    {
+        id: keywordSelectionDialog
+        titleText: "Keyword"
+        selectedIndex: 0
+
+        model: ListModel
+        {
+            ListElement { name: "To be implemented"}
+        }
+    }
+
+    Button
+    {
+        id: tagButton
+        text: "Tag"
+        onClicked: {tagSelectionDialog.open()}
+
+        anchors.top: keywordButton.bottom
+    }
+
+    SelectionDialog
+    {
+        id: tagSelectionDialog
+        titleText: "Tag"
+        selectedIndex: 0
+
+        model: ListModel
+        {
+            ListElement {name: "To be implemented"}
+        }
+    }
+
     Button{
         anchors {
             horizontalCenter: parent.horizontalCenter
             top: label.bottom
             topMargin: 10
         }
-        text: qsTr("Click here!")
-        onClicked: label.visible = true
+        text: qsTr("Search")
+        onClicked: {appWindow.pageStack.push(resultsPage)}
     }
 }

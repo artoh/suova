@@ -1,5 +1,5 @@
 /**************************************************************************
-**  main.qml (of Suova)
+**  ResultsPage.qml (of Suova)
 **  Copyright (c) 2012 Heli Hyvättinen
 **
 **  This program is free software: you can redistribute it and/or modify
@@ -14,41 +14,24 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  main.qml  28.6.2012
+**  resultsPage 28.6.2012
 **************************************************************************/
+
+// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
+
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
 
-PageStackWindow {
-    id: appWindow
 
-    initialPage: mainPage
 
-    MainPage {
-        id: mainPage
-    }
+Page {
 
-    ResultsPage
+    tools: commonTools
+
+    Label
     {
-        id: resultsPage
+        text: "Search not implemented yet!"
     }
 
-    ToolBarLayout {
-        id: commonTools
-        visible: true
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
-            anchors.right: (parent === undefined) ? undefined : parent.right
-            onClicked: (myMenu.status === DialogStatus.Closed) ? myMenu.open() : myMenu.close()
-        }
-    }
-
-    Menu {
-        id: myMenu
-        visualParent: pageStack
-        MenuLayout {
-            MenuItem { text: qsTr("Sample menu item") }
-        }
-    }
 }

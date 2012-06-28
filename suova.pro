@@ -44,7 +44,8 @@ OTHER_FILES += \
     qtc_packaging/debian_harmattan/changelog \
     qml/Suova/MainPage.qml \
     qml/main.qml \
-    qml/MainPage.qml
+    qml/MainPage.qml \
+    qml/ResultsPage.qml
 
 RESOURCES += \
     pictures.qrc \
