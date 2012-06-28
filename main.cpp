@@ -19,9 +19,11 @@
 
 #include <QtGui/QApplication>
 #include "suovawindow.h"
+
 #include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
 #include "qmlapplicationviewer.h"
-#include <QtDeclarative/QDeclarativeView>
+#include <QtDeclarative>
+#include "suovaquerymodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -47,6 +49,7 @@ int main(int argc, char *argv[])
 
 //    QmlApplicationViewer viewer;
     QDeclarativeView view;
+    qmlRegisterType <SuovaQueryModel> ("suova",0,1,"SuovaQueryModel");
 //    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 //    viewer.setMainQmlFile(QUrl("qrc:/qml/main.qml"));
 //    viewer.showExpanded();

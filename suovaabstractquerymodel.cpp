@@ -23,10 +23,17 @@
 #include <QDBusConnection>
 #include <QDBusArgument>
 
+    const int nameRole = Qt::UserRole+1;
+
 
 SuovaAbstractQueryModel::SuovaAbstractQueryModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
+
+
+    QHash<int, QByteArray> roles;
+    roles[nameRole] = "name";
+    setRoleNames(roles);
 }
 
 
@@ -35,7 +42,7 @@ QVariant SuovaAbstractQueryModel::data(const QModelIndex &index, int role) const
     if( !index.isValid())
         return QVariant();
 
-    if( role == Qt::DisplayRole)
+    if( role == Qt::DisplayRole || nameRole)
     {
         return result( index.row(), index.column());
     }
@@ -45,6 +52,9 @@ QVariant SuovaAbstractQueryModel::data(const QModelIndex &index, int role) const
 
 bool SuovaAbstractQueryModel::execQuery(QString query)
 {
+
+    beginResetModel();
+
     // dbus message connecting to Meta Tracker server
     QDBusMessage message = QDBusMessage::createMethodCall("org.freedesktop.Tracker1","/org/freedesktop/Tracker1/Resources",
                                                               "org.freedesktop.Tracker1.Resources","SparqlQuery");
@@ -88,6 +98,9 @@ bool SuovaAbstractQueryModel::execQuery(QString query)
                 endInsertRows();
         }
         emit layoutChanged();
+
+        endResetModel();
+
         return true;
     }
 

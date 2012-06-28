@@ -19,6 +19,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import suova 0.1
 
 Page {
     tools: commonTools
@@ -88,7 +89,12 @@ Page {
     {
         id: keywordButton
         text: "Keyword"
-        onClicked: {keywordSelectionDialog.open()}
+        onClicked: {
+            keywordSelectionDialog.model.setQuery("SELECT DISTINCT ?k where {?f nie:keyword ?k . } ORDER BY ?k")
+            keywordSelectionDialog.model.count = keywordSelectionDialog.model.rowCount()
+            console.debug(keywordSelectionDialog.model.count)
+            keywordSelectionDialog.open()
+        }
 
         anchors.top: fileTypeButton.bottom
 
@@ -100,20 +106,42 @@ Page {
         titleText: "Keyword"
         selectedIndex: 0
 
-        model: ListModel
-        {
-            ListElement { name: "To be implemented"}
+
+        model: SuovaQueryModel{
+            property int count : 0
+
+
+
+
         }
+
+
+//        delegate: Label {text: keywordSelectionDialog.model.result(index,0)
+//      color: "white"}
+
+//        model: ListModel
+//        {
+//            ListElement { name: "To be implemented"}
+//        }
     }
 
     Button
     {
         id: tagButton
         text: "Tag"
-        onClicked: {tagSelectionDialog.open()}
+        onClicked: {
+            tagSelectionDialog.model.setQuery("SELECT  ?labels WHERE {   ?tags a nao:Tag ;     nao:prefLabel ?labels . } ORDER BY ASC(?labels)")
+            tagSelectionDialog.model.count = tagSelectionDialog.model.rowCount()
+            console.debug("Fetched tags")
+            tagSelectionDialog.open()
+
+           }
 
         anchors.top: keywordButton.bottom
+
+
     }
+
 
     SelectionDialog
     {
@@ -121,11 +149,14 @@ Page {
         titleText: "Tag"
         selectedIndex: 0
 
-        model: ListModel
-        {
-            ListElement {name: "To be implemented"}
-        }
+        model: SuovaQueryModel
+                {
+                property int count : 0;
+
+                }
+
     }
+
 
     Button{
         anchors {
