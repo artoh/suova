@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 //    viewer.setMainQmlFile(QUrl("qrc:/qml/main.qml"));
 //    viewer.showExpanded();
     view.setSource(QUrl("qrc:/qml/main.qml"));
-    view.show();
+    view.showFullScreen();
 
     return app->exec();
 #endif

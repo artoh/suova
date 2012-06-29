@@ -24,12 +24,6 @@ import suova 0.1
 Page {
     tools: commonTools
 
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: qsTr("Hello world!")
-        visible: false
-    }
 
     Button
     {
@@ -48,9 +42,21 @@ Page {
 
         model: ListModel
         {
-            ListElement { name: "File name" }
-            ListElement { name: "Contents" }
-            ListElement { name: "Title" }
+            ListElement
+            {
+                name: "File name"
+                ontology: "nfo:fileName"
+            }
+            ListElement
+            {
+                name: "Contents"
+                ontology: "fts:match"
+            }
+            ListElement
+            {
+                name: "Title"
+                ontology: "nie:title"
+            }
         }
 
     }
@@ -79,9 +85,23 @@ Page {
 
         model: ListModel
         {
-            ListElement { name: "All files" }
-            ListElement { name: "Text documents" }
-            ListElement { name: "Image files" }
+            ListElement
+            {
+                name: "All files"
+                ontology: ""
+            }
+
+            ListElement
+            {
+                name: "Text documents"
+                ontology: "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#TextDocument"
+            }
+
+            ListElement
+            {
+                name: "Image files"
+                ontology: "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Image"
+            }
         }
     }
 
@@ -109,20 +129,8 @@ Page {
 
         model: SuovaQueryModel{
             property int count : 0
-
-
-
-
         }
 
-
-//        delegate: Label {text: keywordSelectionDialog.model.result(index,0)
-//      color: "white"}
-
-//        model: ListModel
-//        {
-//            ListElement { name: "To be implemented"}
-//        }
     }
 
     Button
@@ -161,10 +169,10 @@ Page {
     Button{
         anchors {
             horizontalCenter: parent.horizontalCenter
-            top: label.bottom
+            top: tagButton.bottom
             topMargin: 10
         }
         text: qsTr("Search")
-        onClicked: {appWindow.pageStack.push(resultsPage)}
+        onClicked: {pageStack.push(resultsPage)}
     }
 }

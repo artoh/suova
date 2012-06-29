@@ -37,6 +37,8 @@ PageStackWindow {
     ToolBarLayout {
         id: commonTools
         visible: true
+
+
         ToolIcon {
             platformIconId: "toolbar-view-menu"
             anchors.right: (parent === undefined) ? undefined : parent.right
