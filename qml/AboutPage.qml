@@ -1,5 +1,5 @@
 /**************************************************************************
-**  main.qml (of Suova)
+**  AboutPage.qml (of Suova)
 **  Copyright (c) 2012 Heli Hyvättinen
 **
 **  This program is free software: you can redistribute it and/or modify
@@ -14,53 +14,51 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  main.qml  28.6.2012
+**  AboutPage 30.6.2012
 **************************************************************************/
 
+// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import com.nokia.meego 1.0
 
-PageStackWindow {
-    id: appWindow
-
-    initialPage: mainPage
-
-    MainPage {
-        id: mainPage
-    }
-
-    ResultsPage
+Page
+{
+    tools: ToolBarLayout
     {
-        id: resultsPage
-    }
-
-    AboutPage
-    {
-        id: aboutPage
-    }
-
-    ToolBarLayout {
-        id: commonTools
-        visible: true
-
-
-        ToolIcon {
-            platformIconId: "toolbar-view-menu"
-            anchors.right: (parent === undefined) ? undefined : parent.right
-            onClicked: (myMenu.status === DialogStatus.Closed) ? myMenu.open() : myMenu.close()
-        }
-    }
-
-    Menu {
-        id: myMenu
-        visualParent: pageStack
-        MenuLayout {
-            MenuItem
+        ToolIcon
+        {
+//            id: backTool
+            iconId: "toolbar-back"
+            onClicked:
             {
-                text: qsTr("About")
-                onClicked: pageStack.push(aboutPage)
+                pageStack.pop()
             }
-
         }
     }
+    Label
+    {
+        id: title
+        text: "Suova 0.0.1"
+    }
+    Label
+    {
+        id: explanation
+        text: "A Meta Tracker search frontend"
+        anchors.top: title.bottom
+    }
+    Label
+    {
+        id: authors
+        text: "© Arto Hyvättinen & Heli Hyvättinen 2012"
+        anchors.top: explanation.bottom
+    }
+
+    Label
+    {
+        id: license
+        text: "Licence: General Public License 3.\n The source code is available from..."
+        anchors.top: authors.bottom
+    }
+
+
 }

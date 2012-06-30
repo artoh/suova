@@ -47,7 +47,8 @@ OTHER_FILES += \
     qml/Suova/MainPage.qml \
     qml/main.qml \
     qml/MainPage.qml \
-    qml/ResultsPage.qml
+    qml/ResultsPage.qml \
+    qml/AboutPage.qml
 
 RESOURCES += \
     pictures.qrc \
