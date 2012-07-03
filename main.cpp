@@ -21,7 +21,7 @@
 #include "suovawindow.h"
 
 #include <qplatformdefs.h> // to recognize MEEGO_EDITION_HARMATTAN
-#include "qmlapplicationviewer.h"
+//#include "qmlapplicationviewer.h"
 #include <QtDeclarative>
 #include "suovaquerymodel.h"
 
@@ -44,8 +44,10 @@ int main(int argc, char *argv[])
 
     //Harmattan version
 
-#ifdef MEEGO_EDITION_HARMATTAN
-    QScopedPointer<QApplication> app(createApplication(argc, argv));
+#ifdef MEEGO_EDITION_HARMATTAN/*
+    QScopedPointer<QApplication> app(createApplication(argc, argv));*/
+
+        QApplication a(argc, argv);
 
 //    QmlApplicationViewer viewer;
     QDeclarativeView view;
@@ -56,7 +58,9 @@ int main(int argc, char *argv[])
     view.setSource(QUrl("qrc:/qml/main.qml"));
     view.showFullScreen();
 
-    return app->exec();
+//    return app->exec();
+
+        return a.exec();
 #endif
 
 

@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui  dbus
+QT += declarative
 
 TARGET = suova
 TEMPLATE = app
@@ -29,9 +30,9 @@ HEADERS  += suovawindow.h \
     suovaabstractfileinfo.h \
     suovasparqlwidget.h
 
-# Please do not modify the following two lines. Required for deployment.
-include(qmlapplicationviewer/qmlapplicationviewer.pri)
-qtcAddDeployment()
+## Please do not modify the following two lines. Required for deployment.
+#include(qmlapplicationviewer/qmlapplicationviewer.pri)
+#qtcAddDeployment()
 
 OTHER_FILES += \
     README.txt \
@@ -61,6 +62,8 @@ contains(MEEGO_EDITION,harmattan) {
 # Speed up launching on MeeGo/Harmattan when using applauncherd daemon
 CONFIG += qdeclarative-boostable
 
+
+
 ## Add more folders to ship with the application, here
 #folder_01.source = qml/Suova
 #folder_01.target = qml
@@ -70,3 +73,15 @@ CONFIG += qdeclarative-boostable
 
 
 
+
+contains(MEEGO_EDITION,harmattan) {
+    desktopfile.files = suova.desktop
+    desktopfile.path = /usr/share/applications
+    INSTALLS += desktopfile
+}
+
+contains(MEEGO_EDITION,harmattan) {
+    icon.files = suova.png
+    icon.path = /usr/share/icons/hicolor/80x80/apps
+    INSTALLS += icon
+}

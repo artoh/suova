@@ -18,6 +18,7 @@
 **************************************************************************/
 
 #include "suovaquerymodel.h"
+#include <QDebug>
 
 
 
@@ -84,8 +85,15 @@ void SuovaQueryModel::appendRow(const QStringList& rowData)
 bool SuovaQueryModel::setQuery(const QString &query)
 {
 
+//    qDebug() << "Setting Query";
     if( execQuery(query))
     {
+//        qDebug() << "Query succeeded";
+//        qDebug() << columnCount() << " columns";
+//        qDebug() << rowCount() << "rows";
+//        qDebug() << data(index(0,0),Qt::DisplayRole) << " <= data of first item";
+
+
         columnHeaders_.clear();
 
         // Try to analyze query to find column headers
@@ -99,5 +107,6 @@ bool SuovaQueryModel::setQuery(const QString &query)
         }
         return true;
     }
+//    qDebug() << "Query failed.";
     return false;
 }

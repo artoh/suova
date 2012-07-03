@@ -24,6 +24,26 @@ import suova 0.1
 Page {
     tools: commonTools
 
+    Component.onCompleted:
+    {
+        keywordSelectionDialog.model.setQuery("SELECT DISTINCT ?k where {?f nie:keyword ?k . } ORDER BY ?k")
+        keywordSelectionDialog.model.count = keywordSelectionDialog.model.rowCount()
+//        console.debug(keywordSelectionDialog.model.count)
+
+        tagSelectionDialog.model.setQuery("SELECT  ?labels WHERE {   ?tags a nao:Tag ;     nao:prefLabel ?labels . } ORDER BY ASC(?labels)")
+        tagSelectionDialog.model.count = tagSelectionDialog.model.rowCount()
+//        console.debug("Fetched tags")
+
+
+        keywordSelectionDialog.model.setQuery("SELECT DISTINCT ?k where {?f nie:keyword ?k . } ORDER BY ?k")
+        keywordSelectionDialog.model.count = keywordSelectionDialog.model.rowCount()
+//        console.debug(keywordSelectionDialog.model.count)
+
+        tagSelectionDialog.model.setQuery("SELECT  ?labels WHERE {   ?tags a nao:Tag ;     nao:prefLabel ?labels . } ORDER BY ASC(?labels)")
+        tagSelectionDialog.model.count = tagSelectionDialog.model.rowCount()
+//        console.debug("Fetched tags")
+    }
+
 
     Button
     {
@@ -110,9 +130,7 @@ Page {
         id: keywordButton
         text: "Keyword"
         onClicked: {
-            keywordSelectionDialog.model.setQuery("SELECT DISTINCT ?k where {?f nie:keyword ?k . } ORDER BY ?k")
-            keywordSelectionDialog.model.count = keywordSelectionDialog.model.rowCount()
-            console.debug(keywordSelectionDialog.model.count)
+
             keywordSelectionDialog.open()
         }
 
@@ -138,9 +156,7 @@ Page {
         id: tagButton
         text: "Tag"
         onClicked: {
-            tagSelectionDialog.model.setQuery("SELECT  ?labels WHERE {   ?tags a nao:Tag ;     nao:prefLabel ?labels . } ORDER BY ASC(?labels)")
-            tagSelectionDialog.model.count = tagSelectionDialog.model.rowCount()
-            console.debug("Fetched tags")
+
             tagSelectionDialog.open()
 
            }
