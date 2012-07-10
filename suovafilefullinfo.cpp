@@ -29,7 +29,7 @@ SuovaFileFullInfo::SuovaFileFullInfo(QString urn, QObject *parent) :
 {
     urn_ = urn;
 
-    QString queryString = QString("SELECT ?predicate ?object ( EXISTS { ?predicate rdfs:range [ rdfs:subClassOf rdfs:Resource ] } ) WHERE { <%1> ?predicate ?object }").arg(urn);
+    QString queryString = QString("SELECT ?predicate ?object  WHERE { <%1> ?predicate ?object }").arg(urn);
 
     // Use model query to get all the information.
     execQuery(queryString);

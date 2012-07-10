@@ -21,6 +21,7 @@
 #define SUOVAFILEQUERYMODEL_H
 
 #include "suovafilefullinfo.h"
+#include "suovafileinfo.h"
 
 #include <QList>
 
@@ -57,7 +58,7 @@ public slots:
 protected:
     virtual void appendRow(const QStringList &rowData);
 
-    QList<SuovaFileFullInfo*> files_;
+    QList<SuovaFileInfo*> files_;
 };
 
 #endif // SUOVAFILEQUERYMODEL_H

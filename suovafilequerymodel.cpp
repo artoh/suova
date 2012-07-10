@@ -35,7 +35,7 @@ SuovaFileQueryModel::SuovaFileQueryModel(QObject *parent, const QString &where) 
 bool SuovaFileQueryModel::setWhere(const QString &where)
 {
     // query with file info headers and custom where
-    QString query = QString("SELECT ?f WHERE  %2 ").arg(where);
+    QString query = QString("SELECT %1 WHERE  %2 ").arg(SuovaFileInfo::SelectFields).arg(where);
 
     return execQuery(query);
 
@@ -43,23 +43,25 @@ bool SuovaFileQueryModel::setWhere(const QString &where)
 
 SuovaFileFullInfo* SuovaFileQueryModel::fileInfo(const int row) const
 {
-    return files_.value(row,0);
+    SuovaFileFullInfo* info = new SuovaFileFullInfo( files_.value(row,0)->urn() );
+    return info;
+
 }
 
 
 void SuovaFileQueryModel::appendRow(const QStringList &rowData)
 {
     // append SuovaFileInfo object
-    SuovaFileFullInfo* info = new SuovaFileFullInfo(rowData.first(), this);
+    SuovaFileInfo* info = new SuovaFileInfo(rowData);
     files_.append( info );
 }
 
 
 void SuovaFileQueryModel::clear()
 {
-    SuovaFileFullInfo* info;
+    SuovaFileInfo* info;
     foreach( info, files_)
-        info->deleteLater();
+        delete info;
     files_.clear();
 }
 
@@ -70,8 +72,8 @@ int SuovaFileQueryModel::rowCount(const QModelIndex &) const
 
 int SuovaFileQueryModel::columnCount(const QModelIndex &) const
 {
-    // File, Modified, Accessed and Size, tags
-    return 5;
+    // File, Modified, Accessed and Size, // tags
+    return 4;
 }
 
 QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -90,7 +92,6 @@ QVariant SuovaFileQueryModel::headerData(int section, Qt::Orientation orientatio
             case 1: return tr("Modified");
             case 2: return tr("Accessed");
             case 3: return tr("Size");
-            case 4: return tr("Tags");
 
             }
         }
@@ -119,14 +120,16 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
         switch( index.column() )
         {
         case 0:
-            return files_.at(index.row())->information("fileName");
+            if(files_.at(index.row())->fileName().isEmpty())
+                    return files_.at(index.row())->title();
+            return files_.at(index.row())->fileName();
         case 1:
-            return files_.at(index.row())->information("fileLastModified").toDate();
+            return files_.at(index.row())->modified();
         case 2:
-            return files_.at(index.row())->information("fileLastAccessed").toDate();
+            return files_.at(index.row())->accessed();
         case 3:
         {
-            int bytes = files_.at(index.row())->information("fileSize").toInt();
+            int bytes = files_.at(index.row())->bytes();
             if( bytes < 1024 )
                 return tr("%1 B").arg(bytes);
             if( bytes < 1024 * 1024)
@@ -143,23 +146,17 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
         switch( index.column() )
         {
         case 0:
-            if( files_.at(index.row())->information("title").isNull())
-                return files_.at(index.row())->information("fileName");
-            else
-                return files_.at(index.row())->information("title");
+            if(files_.at(index.row())->fileName().isEmpty())
+                    return files_.at(index.row())->title();
+            return files_.at(index.row())->fileName();
         case 1:
-            return files_.at(index.row())->information("fileLastModified");
+            return files_.at(index.row())->modified();
         case 2:
-            return files_.at(index.row())->information("fileLastAccessed");
+            return files_.at(index.row())->accessed();
         case 3:
         {
-            int bytes = files_.at(index.row())->information("fileSize").toInt();
-            return bytes; // Disabled to sort!
-            if( bytes < 1024 )
-                return tr("%1 b").arg(bytes);
-            if( bytes < 1024 * 1024)
-                return tr("%1 k").arg(bytes / 1024);
-            return tr("%1 MB").arg( bytes / (1024 * 1024));
+            int bytes = files_.at(index.row())->bytes();
+            return bytes;
         }
         case 4:
             return files_.at(index.row())->information("tag").toString();
@@ -173,7 +170,7 @@ QVariant SuovaFileQueryModel::data(const QModelIndex &index, int role) const
         QString iconFileName;
         QString mimetype = files_.at(index.row())->information("mimeType").toString();
         if( mimetype.startsWith("image"))
-            iconFileName = QUrl(files_.at(index.row())->information("url").toString() ).toLocalFile() ;
+            iconFileName = ":/mime/pic/image-x-generic.png" ;
         else
             iconFileName = QString(":/mime/pic/%1.png").arg( mimetype.replace('/','-'));
         if( QFile(iconFileName).exists())
