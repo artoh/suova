@@ -67,6 +67,8 @@ SuovaWindow::SuovaWindow(QWidget *parent)
 
     textBrowser_ = new QTextBrowser(this);
     textBrowser_->setReadOnly(true);
+    textBrowser_->setHtml(QString("<img src=:/icon/pic/suova.svg width=240>%1").arg(tr("<h2> Welcome to Suova Tracker Search Tool </h2><p> &copy; Arto Hyv&auml;ttinen 2012. This program is a free software, licensed under GPL 3")));
+
     QDockWidget *textDock = new QDockWidget( tr("Preview"));
 
     textDock->setWidget( textBrowser_);
@@ -173,8 +175,18 @@ void SuovaWindow::fileSelected(const QModelIndex &index)
 {
 
     QModelIndex sourceIndex = filter_->mapToSource(index);
-    infoTable_->setModel( model_->fileInfo( sourceIndex.row()) );
-    textBrowser_->setText( model_->fileInfo( sourceIndex.row())->information("plainTextContent").toString());
+    SuovaFileFullInfo* info = model_->fileInfo( sourceIndex.row());
+    infoTable_->setModel( info );
+
+    // Preview!
+
+    QString mime = info->information("mimeType").toString();
+    if( mime.startsWith("image") && info->information("fileSize").toInt() < 1024 * 1024 * 2)
+        textBrowser_->setHtml( QString("<img src=\"%1\" width=%2>").arg(info->information("url").toString()).arg(textBrowser_->width()-20) );
+    else if((mime.startsWith("text/html") || mime.startsWith("text/plain")) && info->information("fileSize").toInt() < 1024 * 32)
+        textBrowser_->setSource( info->information("url").toString() );
+    else
+        textBrowser_->setText( info->information("plainTextContent").toString());
 }
 
 
