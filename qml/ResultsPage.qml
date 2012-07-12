@@ -31,11 +31,24 @@ Page {
 
     property string testVariable;
 
+    property string fileType
+    property string searchType
+    property string tag
+    property string keyword
+    property string searchTerm
+
     onStatusChanged:
     {
         if (status == PageStatus.Activating)
         {
             console.debug(testModel.rowCount())
+
+            testModel.setSearchType(searchType)
+            testModel.setFileType(fileType)
+            testModel.setTag(tag)
+            testModel.setKeyword(keyword)
+            testModel.setSearchString(searchTerm)
+
             testModel.doQuery()
             console.debug(testModel.rowCount())
 

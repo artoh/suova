@@ -62,7 +62,7 @@ Page {
 
         onAccepted:
         {
-            resultsPage.testModel.setSearchType(model.get(selectedIndex).ontology)
+            resultsPage.searchType = model.get(selectedIndex).ontology
         }
 
         model: ListModel
@@ -91,7 +91,6 @@ Page {
     {
         id: searchTextField
         anchors.top: searchTypeButton.bottom
-
     }
 
     Button
@@ -111,7 +110,7 @@ Page {
 
         onAccepted:
         {
-            resultsPage.testmodel.setFileType(model.get(selectedIndex).ontology)
+            resultsPage.fileType = model.get(selectedIndex).ontology
         }
 
         model: ListModel
@@ -157,7 +156,7 @@ Page {
 
         onAccepted:
         {
-            resultsPage.testModel.setKeyword(model.get(selectedIndex).name)
+            resultsPage.keyword = model.result(selectedIndex,0)
         }
 
 
@@ -191,7 +190,7 @@ Page {
 
         onAccepted:
         {
-            resultsPage.testModel.setTag(model.get(selectedIndex).name)
+            resultsPage.tag = model.result(selectedIndex,0)
         }
 
         model: SuovaQueryModel
@@ -212,8 +211,7 @@ Page {
         text: qsTr("Search")
         onClicked:
         {
-            //resultsPage.testModel.doQuery()
-            resultsPage.testVariable = "testi"
+            resultsPage.searchTerm = searchTextField.text
             pageStack.push(resultsPage)
         }
     }
