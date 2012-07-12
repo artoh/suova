@@ -60,11 +60,6 @@ Page {
         titleText: qsTr("Search type")
         selectedIndex: 0
 
-        onAccepted:
-        {
-            resultsPage.searchType = model.get(selectedIndex).ontology
-        }
-
         model: ListModel
         {
             ListElement
@@ -211,6 +206,7 @@ Page {
         text: qsTr("Search")
         onClicked:
         {
+            resultsPage.searchType = searchTypeSelectionDialog.model.get(searchTypeSelectionDialog.selectedIndex).ontology
             resultsPage.searchTerm = searchTextField.text
             pageStack.push(resultsPage)
         }

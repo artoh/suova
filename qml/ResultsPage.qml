@@ -50,7 +50,10 @@ Page {
             testModel.setSearchString(searchTerm)
 
             testModel.doQuery()
+            testModel.count = testModel.rowCount()
             console.debug(testModel.rowCount())
+            console.debug(testModel.result(0,0))
+            console.debug(testModel.result(1,0))
 
         }
         else console.debug("status changed")
@@ -70,13 +73,15 @@ Page {
 
     }
 
-    Label
+    ListView
     {
-        text: "Search not implemented yet!"
+        id: testView
+       model: testModel
     }
 
     SuovaEasyFileQueryModel
     {
         id: testModel
+        property int count: 0
     }
 }
