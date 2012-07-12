@@ -36,15 +36,17 @@ class SuovaFileQueryModel : public SuovaAbstractQueryModel
 public:
     explicit SuovaFileQueryModel(QObject *parent = 0, const QString& where = QString());
 
-    int rowCount(const QModelIndex & = QModelIndex()) const;
-    int columnCount(const QModelIndex & = QModelIndex()) const;
+    //Q_INVOKABLEs added by Heli Hyvättinen 12.7.2012 for use with QML
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    Q_INVOKABLE int rowCount(const QModelIndex & = QModelIndex()) const;
+    Q_INVOKABLE int columnCount(const QModelIndex & = QModelIndex()) const;
 
-    virtual QString result(const int row, const int column) const;
+    Q_INVOKABLE QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
 
-    SuovaFileFullInfo* fileInfo(const int row) const;
+    Q_INVOKABLE virtual QString result(const int row, const int column) const;
+
+    Q_INVOKABLE SuovaFileFullInfo* fileInfo(const int row) const;
 
     /** Query with where clause*/
     bool setWhere(const QString& where);

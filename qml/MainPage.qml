@@ -60,6 +60,11 @@ Page {
         titleText: qsTr("Search type")
         selectedIndex: 0
 
+        onAccepted:
+        {
+            resultsPage.testModel.setSearchType(model.get(selectedIndex).ontology)
+        }
+
         model: ListModel
         {
             ListElement
@@ -86,6 +91,7 @@ Page {
     {
         id: searchTextField
         anchors.top: searchTypeButton.bottom
+
     }
 
     Button
@@ -102,6 +108,11 @@ Page {
         id: fileTypeSelectionDialog
         titleText: "File type"
         selectedIndex: 0
+
+        onAccepted:
+        {
+            resultsPage.testmodel.setFileType(model.get(selectedIndex).ontology)
+        }
 
         model: ListModel
         {
@@ -144,6 +155,11 @@ Page {
         titleText: "Keyword"
         selectedIndex: 0
 
+        onAccepted:
+        {
+            resultsPage.testModel.setKeyword(model.get(selectedIndex).name)
+        }
+
 
         model: SuovaQueryModel{
             property int count : 0
@@ -173,6 +189,11 @@ Page {
         titleText: "Tag"
         selectedIndex: 0
 
+        onAccepted:
+        {
+            resultsPage.testModel.setTag(model.get(selectedIndex).name)
+        }
+
         model: SuovaQueryModel
                 {
                 property int count : 0;
@@ -189,6 +210,11 @@ Page {
             topMargin: 10
         }
         text: qsTr("Search")
-        onClicked: {pageStack.push(resultsPage)}
+        onClicked:
+        {
+            //resultsPage.testModel.doQuery()
+            resultsPage.testVariable = "testi"
+            pageStack.push(resultsPage)
+        }
     }
 }

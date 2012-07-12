@@ -14,7 +14,7 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  resultsPage 28.6.2012
+**  resultsPage 11.7.2012
 **************************************************************************/
 
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
@@ -22,14 +22,26 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
-
+import suova 0.1
 
 
 Page {
 
 //   tools: commonTools
 
+    property string testVariable;
 
+    onStatusChanged:
+    {
+        if (status == PageStatus.Activating)
+        {
+            console.debug(testModel.rowCount())
+            testModel.doQuery()
+            console.debug(testModel.rowCount())
+
+        }
+        else console.debug("status changed")
+    }
     tools: ToolBarLayout
     {
         ToolIcon
@@ -50,4 +62,8 @@ Page {
         text: "Search not implemented yet!"
     }
 
+    SuovaEasyFileQueryModel
+    {
+        id: testModel
+    }
 }

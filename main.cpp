@@ -24,6 +24,7 @@
 //#include "qmlapplicationviewer.h"
 #include <QtDeclarative>
 #include "suovaquerymodel.h"
+#include "suovaeasyfilequerymodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -52,6 +53,7 @@ int main(int argc, char *argv[])
 //    QmlApplicationViewer viewer;
     QDeclarativeView view;
     qmlRegisterType <SuovaQueryModel> ("suova",0,1,"SuovaQueryModel");
+    qmlRegisterType <SuovaEasyFileQueryModel> ("suova",0,1,"SuovaEasyFileQueryModel");
 //    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 //    viewer.setMainQmlFile(QUrl("qrc:/qml/main.qml"));
 //    viewer.showExpanded();
