@@ -14,7 +14,11 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  SuovaAbstractQueryModel  14.6.2012
+**  Modified for Harmattan/QML use by Heli Hyvättinen
+**
+**  SuovaAbstractQueryModel  13.7.2012
+**
+**
 **************************************************************************/
 
 #include "suovaabstractquerymodel.h"
@@ -22,8 +26,9 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QDBusArgument>
+#include <QDebug>
 
-    const int nameRole = Qt::UserRole+1;
+    const int nameRole = Qt::UserRole+1; //Needed by QML SelectionDialog
 
 
 SuovaAbstractQueryModel::SuovaAbstractQueryModel(QObject *parent) :
@@ -42,7 +47,7 @@ QVariant SuovaAbstractQueryModel::data(const QModelIndex &index, int role) const
     if( !index.isValid())
         return QVariant();
 
-    if( role == Qt::DisplayRole || nameRole)
+    if( role == Qt::DisplayRole || nameRole) //nameRole needed by QML SelectionDialog
     {
         return result( index.row(), index.column());
     }
@@ -53,6 +58,9 @@ QVariant SuovaAbstractQueryModel::data(const QModelIndex &index, int role) const
 bool SuovaAbstractQueryModel::execQuery(QString query)
 {
 
+    //Changed for Harmattan use: uses begin/endresetmodel, not begin/end add/remove rows
+    //to avoid segfaulting if more than 7 rows fetched for three times
+
     beginResetModel();
 
     // dbus message connecting to Meta Tracker server
@@ -62,12 +70,17 @@ bool SuovaAbstractQueryModel::execQuery(QString query)
     arguments.append( query );
     message.setArguments(arguments);
 
+           qDebug() << query;
+
     // call Meta Tracker
     message = QDBusConnection::sessionBus().call(message);
 
     if( message.type() == QDBusMessage::ErrorMessage)
-        return false;
+    {
+       qDebug() << "DBus error";
 
+       return false;
+    }
     // dbus reply message contains results as first argument
     // first argument is a table containing the results
 
@@ -75,11 +88,11 @@ bool SuovaAbstractQueryModel::execQuery(QString query)
     {
 
         bool modified = rowCount() > 0; // If there is data, model must emit some signals
-        if( modified)
-            beginRemoveRows(QModelIndex(),0, rowCount()-1);
+//        if( modified)
+//            beginRemoveRows(QModelIndex(),0, rowCount()-1);
         clear();            // Clear old result set
-        if(modified)
-            endRemoveRows();
+//        if(modified)
+//            endRemoveRows(); //ON HARMATTAN: SEGFAULTS AT THIS ROW SYSTEMATICALLY ON THE _THIRD_ TIME IN SUOVAEASYFILEQUERYMODEL
 
         query_ = query;     // Store query string
 
@@ -91,11 +104,11 @@ bool SuovaAbstractQueryModel::execQuery(QString query)
         {
             // Append every row to internal result storage
             // There is a virtual function for more hight level functions
-            if( modified)
-                beginInsertRows(QModelIndex(),rowCount(), rowCount()+1);
+//            if( modified)
+//                beginInsertRows(QModelIndex(),rowCount(), rowCount()+1);
             appendRow(resultSet.asVariant().toStringList() );
-            if( modified)
-                endInsertRows();
+//            if( modified)
+//                endInsertRows();
         }
         emit layoutChanged();
 
