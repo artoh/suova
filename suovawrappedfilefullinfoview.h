@@ -1,5 +1,5 @@
 /**************************************************************************
-**  suovawrappedquerytableview.h (of Suova)
+**  suovawrappedfilefullinfoview.h (of Suova)
 **  Copyright (c) 2012 Heli Hyvättinen
 **
 **  This program is free software: you can redistribute it and/or modify
@@ -14,44 +14,38 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  SuovaWrappedQueryTableView 7.8.2012
+**  SuovaWrappedFileFullInfoView 7.8.2012
 **************************************************************************/
 
-#ifndef SUOVAWRAPPEDQUERYTABLEVIEW_H
-#define SUOVAWRAPPEDQUERYTABLEVIEW_H
+#ifndef SUOVAWRAPPEDFILEFULLINFOVIEW_H
+#define SUOVAWRAPPEDFILEFULLINFOVIEW_H
 
 #include <QGraphicsProxyWidget>
-
-#include "suovaeasyfilequerymodel.h"
-
+#include "suovafilefullinfo.h"
 #include <QTableView>
+/*
+  Provides QML accessible QTableView that uses SuovaFileFullInfo as its model.
+  */
 
-class SuovaWrappedQueryTableView : public QGraphicsProxyWidget
+class SuovaWrappedFileFullInfoView : public QGraphicsProxyWidget
 {
     Q_OBJECT
 public:
-    explicit SuovaWrappedQueryTableView(QGraphicsProxyWidget *parent = 0);
+    explicit SuovaWrappedFileFullInfoView(QGraphicsProxyWidget *parent = 0);
     
+    ~SuovaWrappedFileFullInfoView();
 
 signals:
-
-    void fileChosen(QString urn);
     
 public slots:
 
-    void setSearchType(QString type);
-    void setFileType(QString type);
-    void setSearchString(QString search);
-    void setTag(QString tag);
-    void setKeyword(QString keyword);
-    void doQuery();
+    void setUrn(QString urn);
 
-    void fileSelected(QModelIndex index);
 private:
 
-    QTableView view_;
-    SuovaEasyFileQueryModel model_;
+    QTableView*  pView_;
+    SuovaFileFullInfo* pModel_;
     
 };
 
-#endif // SUOVAWRAPPEDQUERYTABLEVIEW_H
+#endif // SUOVAWRAPPEDFILEFULLINFOVIEW_H

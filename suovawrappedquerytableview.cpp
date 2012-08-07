@@ -59,4 +59,8 @@ void SuovaWrappedQueryTableView::doQuery()
 
 void SuovaWrappedQueryTableView::fileSelected(QModelIndex index)
 {
+    SuovaFileFullInfo* pInfo = model_.fileInfo(index.row());
+
+    emit fileChosen(pInfo->urn());
+
 }

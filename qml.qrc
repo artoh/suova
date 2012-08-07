@@ -4,5 +4,6 @@
         <file>qml/main.qml</file>
         <file>qml/ResultsPage.qml</file>
         <file>qml/AboutPage.qml</file>
+        <file>qml/FullFileInfoPage.qml</file>
     </qresource>
 </RCC>

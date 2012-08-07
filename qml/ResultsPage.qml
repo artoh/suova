@@ -89,6 +89,13 @@ Page {
     {
         id: resultsView
         anchors.fill: parent
+
+        onFileChosen:
+        {
+            console.debug (urn)
+            fullFileInfoPage.urn = urn
+            pageStack.push(fullFileInfoPage)
+        }
     }
 
 

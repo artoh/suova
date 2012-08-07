@@ -26,6 +26,7 @@
 #include "suovaquerymodel.h"
 #include "suovaeasyfilequerymodel.h"
 #include "suovawrappedquerytableview.h"
+#include "suovawrappedfilefullinfoview.h"
 
 int main(int argc, char *argv[])
 {
@@ -57,6 +58,8 @@ int main(int argc, char *argv[])
     qmlRegisterType <SuovaEasyFileQueryModel> ("suova",0,1,"SuovaEasyFileQueryModel");
 
     qmlRegisterType <SuovaWrappedQueryTableView> ("suova", 0,1, "SuovaWrappedQueryTableView");
+    qmlRegisterType <SuovaWrappedFileFullInfoView> ("suova",0,1,"SuovaWrappedFileFullInfoView");
+
 //    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 //    viewer.setMainQmlFile(QUrl("qrc:/qml/main.qml"));
 //    viewer.showExpanded();

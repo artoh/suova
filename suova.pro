@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     suovaabstractfileinfo.cpp \
     suovasparqlwidget.cpp \
     suovaeasyfilequerymodel.cpp \
-    suovawrappedquerytableview.cpp
+    suovawrappedquerytableview.cpp \
+    suovawrappedfilefullinfoview.cpp
 
 HEADERS  += suovawindow.h \
     suovaquerymodel.h \
@@ -32,7 +33,8 @@ HEADERS  += suovawindow.h \
     suovaabstractfileinfo.h \
     suovasparqlwidget.h \
     suovaeasyfilequerymodel.h \
-    suovawrappedquerytableview.h
+    suovawrappedquerytableview.h \
+    suovawrappedfilefullinfoview.h
 
 ## Please do not modify the following two lines. Required for deployment.
 #include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -53,7 +55,8 @@ OTHER_FILES += \
     qml/main.qml \
     qml/MainPage.qml \
     qml/ResultsPage.qml \
-    qml/AboutPage.qml
+    qml/AboutPage.qml \
+    qml/FullFileInfoPage.qml
 
 RESOURCES += \
     pictures.qrc \

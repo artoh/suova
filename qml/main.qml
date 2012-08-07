@@ -39,6 +39,11 @@ PageStackWindow {
         id: aboutPage
     }
 
+    FullFileInfoPage
+    {
+        id: fullFileInfoPage
+    }
+
     ToolBarLayout {
         id: commonTools
         visible: true
