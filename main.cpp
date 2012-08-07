@@ -17,6 +17,11 @@
 **    12.6.2012
 **************************************************************************/
 
+/*
+** Harmattan specific code (c) 2012 Heli Hyvättinen
+** 7.8.2012
+*/
+
 #include <QtGui/QApplication>
 #include "suovawindow.h"
 

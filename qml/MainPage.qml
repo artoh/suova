@@ -14,7 +14,7 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  MainPage.qml  28.6.2012
+**  MainPage.qml 8.8.2012
 **************************************************************************/
 
 import QtQuick 1.1

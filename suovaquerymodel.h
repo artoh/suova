@@ -36,20 +36,20 @@ class SuovaQueryModel : public SuovaAbstractQueryModel
 public:
     SuovaQueryModel(QObject *parent = 0, QString query = QString());
     
-    Q_INVOKABLE int rowCount(const QModelIndex& /* parent */ = QModelIndex()) const; //Q_INVOKABLE added by Heli Hyvättinen 28.12.2012 for use from QML in the Harmattan version
+    Q_INVOKABLE int rowCount(const QModelIndex& /* parent */ = QModelIndex()) const; //Q_INVOKABLE added by Heli Hyvättinen 2012 for use from QML in the Harmattan version
     int columnCount(const QModelIndex& /* parent */ = QModelIndex()) const;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     /** Return single result item as string */
-    Q_INVOKABLE virtual QString result(const int row, const int column) const; //Q_INVOKABLE added by Heli Hyvättinen 28.12.2012 for use from QML in the Harmattan version
+    Q_INVOKABLE virtual QString result(const int row, const int column) const; //Q_INVOKABLE added by Heli Hyvättinen 2012 for use from QML in the Harmattan version
 
 
     /** Set and exec SPARQL query
 
       @arg query Query to execute
       @returns true is successed */
-    Q_INVOKABLE bool setQuery( const QString& query ); //Q_INVOKABLE added by Heli Hyvättinen 28.12.2012 for use from QML in the Harmattan version
+    Q_INVOKABLE bool setQuery( const QString& query ); //Q_INVOKABLE added by Heli Hyvättinen 2012 for use from QML in the Harmattan version
 
     virtual void clear();
 

@@ -14,7 +14,7 @@
 **
 **  See <http://www.gnu.org/licenses/>
 **
-**  AboutPage 30.6.2012
+**  AboutPage 8.8.2012
 **************************************************************************/
 
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
@@ -46,8 +46,11 @@ Page
     Label
     {
         id: license
-        text: "Licence: General Public License 3.\n The source code is available from..."
+        text: "License: General Public License 3.<br>The source code is available from<br><a href=\"https://github.com/artoh/suova/tree/harmattan\">https://github.com/artoh/suova/tree/harmattan</a>"
+        onLinkActivated: Qt.openUrlExternally(link)
         anchors.top: authors.bottom
+        wrapMode: Text.Wrap
+        textFormat: Text.RichText
     }
 
 
