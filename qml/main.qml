@@ -50,6 +50,16 @@ PageStackWindow {
 
         ToolIcon
         {
+            iconId: "toolbar-home"
+            visible: pageStack.depth > 2
+            onClicked:
+            {
+                pageStack.pop(null)
+            }
+        }
+
+        ToolIcon
+        {
 //            id: backTool
             iconId: "toolbar-back"
             visible: (pageStack.currentPage == mainPage) ? false : true
