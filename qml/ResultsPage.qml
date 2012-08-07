@@ -41,19 +41,19 @@ Page {
     {
         if (status == PageStatus.Activating)
         {
-            console.debug(testModel.rowCount())
+//            console.debug(resutsView.rowCount())
 
-            testModel.setSearchType(searchType)
-            testModel.setFileType(fileType)
-            testModel.setTag(tag)
-            testModel.setKeyword(keyword)
-            testModel.setSearchString(searchTerm)
+            resultsView.setSearchType(searchType)
+            resultsView.setFileType(fileType)
+            resultsView.setTag(tag)
+            resultsView.setKeyword(keyword)
+            resultsView.setSearchString(searchTerm)
 
-            testModel.doQuery()
-            testModel.count = testModel.rowCount()
-            console.debug(testModel.rowCount())
-            console.debug(testModel.result(0,0))
-            console.debug(testModel.result(1,0))
+            resultsView.doQuery()
+            //resultsView.count = testModel.rowCount()
+//            console.debug(resultsView.rowCount())
+//            console.debug(resultsView.result(0,0))
+//            console.debug(resultsView.result(1,0))
 
         }
         else console.debug("status changed")
@@ -73,15 +73,23 @@ Page {
 
     }
 
-    ListView
+//    ListView
+//    {
+//        id: testView
+//       model: testModel
+//    }
+
+//    SuovaEasyFileQueryModel
+//    {
+//        id: testModel
+//        property int count: 0
+//    }
+
+    SuovaWrappedQueryTableView //includes the model!
     {
-        id: testView
-       model: testModel
+        id: resultsView
+        anchors.fill: parent
     }
 
-    SuovaEasyFileQueryModel
-    {
-        id: testModel
-        property int count: 0
-    }
+
 }

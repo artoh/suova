@@ -25,6 +25,7 @@
 #include <QtDeclarative>
 #include "suovaquerymodel.h"
 #include "suovaeasyfilequerymodel.h"
+#include "suovawrappedquerytableview.h"
 
 int main(int argc, char *argv[])
 {
@@ -54,6 +55,8 @@ int main(int argc, char *argv[])
     QDeclarativeView view;
     qmlRegisterType <SuovaQueryModel> ("suova",0,1,"SuovaQueryModel");
     qmlRegisterType <SuovaEasyFileQueryModel> ("suova",0,1,"SuovaEasyFileQueryModel");
+
+    qmlRegisterType <SuovaWrappedQueryTableView> ("suova", 0,1, "SuovaWrappedQueryTableView");
 //    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 //    viewer.setMainQmlFile(QUrl("qrc:/qml/main.qml"));
 //    viewer.showExpanded();

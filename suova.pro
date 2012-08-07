@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     suovafilefullinfo.cpp \
     suovaabstractfileinfo.cpp \
     suovasparqlwidget.cpp \
-    suovaeasyfilequerymodel.cpp
+    suovaeasyfilequerymodel.cpp \
+    suovawrappedquerytableview.cpp
 
 HEADERS  += suovawindow.h \
     suovaquerymodel.h \
@@ -30,7 +31,8 @@ HEADERS  += suovawindow.h \
     suovafilefullinfo.h \
     suovaabstractfileinfo.h \
     suovasparqlwidget.h \
-    suovaeasyfilequerymodel.h
+    suovaeasyfilequerymodel.h \
+    suovawrappedquerytableview.h
 
 ## Please do not modify the following two lines. Required for deployment.
 #include(qmlapplicationviewer/qmlapplicationviewer.pri)
