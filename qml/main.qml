@@ -48,6 +48,16 @@ PageStackWindow {
         id: commonTools
         visible: true
 
+        ToolIcon
+        {
+//            id: backTool
+            iconId: "toolbar-back"
+            visible: (pageStack.currentPage == mainPage) ? false : true
+            onClicked:
+            {
+                pageStack.pop()
+            }
+        }
 
         ToolIcon {
             platformIconId: "toolbar-view-menu"

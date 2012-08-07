@@ -26,18 +26,7 @@ Page
 {
     property string urn
 
-    tools: ToolBarLayout
-    {
-        ToolIcon
-        {
-//            id: backTool
-            iconId: "toolbar-back"
-            onClicked:
-            {
-                pageStack.pop()
-            }
-        }
-    }
+    tools: commonTools
 
     SuovaWrappedFileFullInfoView
     {

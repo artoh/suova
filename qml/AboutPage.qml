@@ -23,18 +23,8 @@ import com.nokia.meego 1.0
 
 Page
 {
-    tools: ToolBarLayout
-    {
-        ToolIcon
-        {
-//            id: backTool
-            iconId: "toolbar-back"
-            onClicked:
-            {
-                pageStack.pop()
-            }
-        }
-    }
+    tools: commonTools
+
     Label
     {
         id: title

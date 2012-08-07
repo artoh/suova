@@ -27,7 +27,7 @@ import suova 0.1
 
 Page {
 
-//   tools: commonTools
+   tools: commonTools
 
     property string testVariable;
 
@@ -58,20 +58,7 @@ Page {
         }
         else console.debug("status changed")
     }
-    tools: ToolBarLayout
-    {
-        ToolIcon
-        {
-//            id: backTool
-            iconId: "toolbar-back"
-            onClicked:
-            {
-                pageStack.pop()
-            }
-        }
 
-
-    }
 
 //    ListView
 //    {
