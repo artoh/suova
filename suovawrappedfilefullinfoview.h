@@ -35,6 +35,9 @@ public:
     
     ~SuovaWrappedFileFullInfoView();
 
+    /* This actually returns the url of the file*/
+        Q_INVOKABLE QString getFileNameWithPath();
+
 signals:
     
 public slots:

@@ -69,6 +69,15 @@ PageStackWindow {
             }
         }
 
+
+        ToolButton
+        {
+            text: "Open"
+            onClicked: Qt.openUrlExternally(fullFileInfoPage.currentFile)
+            visible: pageStack.currentPage == fullFileInfoPage
+        }
+
+
         ToolIcon {
             platformIconId: "toolbar-view-menu"
             anchors.right: (parent === undefined) ? undefined : parent.right

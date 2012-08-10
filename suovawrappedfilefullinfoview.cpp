@@ -40,6 +40,11 @@ SuovaWrappedFileFullInfoView::~SuovaWrappedFileFullInfoView()
     delete pView_;
 }
 
+QString SuovaWrappedFileFullInfoView::getFileNameWithPath()
+{
+    return pModel_->information("url").toString();
+}
+
 
 
 void SuovaWrappedFileFullInfoView::setUrn(QString urn)

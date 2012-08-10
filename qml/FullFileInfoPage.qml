@@ -26,6 +26,8 @@ Page
 {
     property string urn
 
+    property string currentFile
+
     tools: commonTools
 
     SuovaWrappedFileFullInfoView
@@ -39,6 +41,7 @@ Page
         if (status == PageStatus.Activating)
         {
             fileInfoView.setUrn(urn)
+            currentFile = fileInfoView.getFileNameWithPath()
         }
     }
 
